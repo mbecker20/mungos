@@ -5,7 +5,7 @@ use serde::de::DeserializeOwned;
 use crate::Database;
 
 impl Database {
-	pub async fn get_full_collection<T: DeserializeOwned + Unpin + Send + Sync>(
+    pub async fn get_full_collection<T: DeserializeOwned + Unpin + Send + Sync>(
         &self,
         db_name: &str,
         collection_name: &str,

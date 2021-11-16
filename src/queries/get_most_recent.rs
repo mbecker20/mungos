@@ -1,11 +1,11 @@
 use futures::stream::TryStreamExt;
-use serde::de::DeserializeOwned;
 use mongodb::{bson::doc, error::Result, options::FindOptions};
+use serde::de::DeserializeOwned;
 
 use crate::Database;
 
 impl Database {
-	pub async fn get_most_recent<T: DeserializeOwned + Unpin + Send + Sync>(
+    pub async fn get_most_recent<T: DeserializeOwned + Unpin + Send + Sync>(
         &self,
         db_name: &str,
         collection_name: &str,

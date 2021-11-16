@@ -1,11 +1,14 @@
-use std::str::FromStr;
-use futures::stream::TryStreamExt;
-use mongodb::{bson::{oid::ObjectId, doc}, error::Result};
-use serde::de::DeserializeOwned;
 use crate::Database;
+use futures::stream::TryStreamExt;
+use mongodb::{
+    bson::{doc, oid::ObjectId},
+    error::Result,
+};
+use serde::de::DeserializeOwned;
+use std::str::FromStr;
 
 impl Database {
-  	pub async fn get_many_by_id<T: DeserializeOwned + Unpin + Send + Sync>(
+    pub async fn get_many_by_id<T: DeserializeOwned + Unpin + Send + Sync>(
         &self,
         db_name: &str,
         collection_name: &str,
