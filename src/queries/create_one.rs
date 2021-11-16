@@ -1,3 +1,6 @@
+//! Creates a single entry in the specified collection.
+
+
 use mongodb::error::Result;
 use serde::Serialize;
 

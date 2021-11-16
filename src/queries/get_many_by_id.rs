@@ -1,3 +1,6 @@
+//! Retrieves multiple documents from a collection by their id field.
+
+
 use crate::Collection;
 use futures::stream::TryStreamExt;
 use mongodb::{

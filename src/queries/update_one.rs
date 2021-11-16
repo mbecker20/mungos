@@ -1,3 +1,6 @@
+//! Retrieves multiple documents by their id field.
+
+
 use crate::Collection;
 use mongodb::{
     bson::{doc, oid::ObjectId, to_bson},

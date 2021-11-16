@@ -1,3 +1,6 @@
+//! Updates multiple documents in a collection by their id field.
+
+
 use mongodb::{bson::Document, error::Result};
 use serde::Serialize;
 

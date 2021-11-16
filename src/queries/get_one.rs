@@ -1,3 +1,6 @@
+//! Retrieves a single document from a collection.
+
+
 use mongodb::{
     bson::{doc, oid::ObjectId},
     error::Result,

@@ -2,6 +2,8 @@ use mongodb::{options::ClientOptions, Client, Collection as MongoCollection};
 use std::time::Duration;
 pub mod queries;
 
+pub use mongodb::options::FindOptions;
+
 pub struct Mungos {
     pub client: Client,
 }

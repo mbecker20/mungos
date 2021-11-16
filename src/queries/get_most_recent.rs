@@ -1,3 +1,6 @@
+//! Retrieves the n most recent documents in a collection.
+
+
 use futures::stream::TryStreamExt;
 use mongodb::{bson::doc, error::Result, options::FindOptions};
 use serde::de::DeserializeOwned;

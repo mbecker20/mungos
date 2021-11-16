@@ -1,3 +1,5 @@
+//! Deletes a single entry in the specified collection.
+
 use crate::Collection;
 use mongodb::{
     bson::{doc, oid::ObjectId},

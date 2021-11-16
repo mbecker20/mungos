@@ -1,3 +1,6 @@
+//! Retrieves some documents from a collection based on options.
+
+
 use futures::stream::TryStreamExt;
 use mongodb::{error::Result, options::FindOptions};
 use serde::de::DeserializeOwned;

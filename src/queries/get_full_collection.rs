@@ -1,3 +1,5 @@
+//! Retrieves all the documents in a collection.
+
 use futures::stream::TryStreamExt;
 use mongodb::error::Result;
 use serde::de::DeserializeOwned;
