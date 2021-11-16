@@ -1,6 +1,6 @@
 //! Creates many documents in a collection.
 //! 
-//! Takes a Vec of structs of type T which implements the Serializable trait, and adds them sequentially to the collection.
+//! Takes a Vec of structs of type T which implement the Serializable trait, and adds them sequentially to the collection,
 //! in that the 0th index of the Vec is added first into the collection.
 //! 
 //! # Examples

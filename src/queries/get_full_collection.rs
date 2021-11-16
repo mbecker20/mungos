@@ -1,6 +1,6 @@
 //! Retrieves all the documents in a collection.
 //! 
-//! Retriees the entire collection, and needs to be assigned to some variable.
+//! Retrieves the entire collection, and needs to be assigned to some variable.
 //! Returns a Vec of the type that the collection is assigned to. 
 //! 
 //! # Examples

@@ -1,6 +1,7 @@
 //! Retrieves some documents from a collection based on options.
 //! 
-//! Retrieves multiple documents from a collection based on the FindOptions provided to the function.
+//! Retrieves multiple documents from a collection based on the FindOptions provided to the function,
+//! and returns a Vec of the type that the collection is assigned to.
 //! 
 //! FindOptions are created using the mongoDB FindOptions struct, found in mongodb::options::FindOptions;
 //! 

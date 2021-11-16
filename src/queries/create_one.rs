@@ -1,6 +1,6 @@
 //! Creates a single entry in the specified collection.
 //! 
-//! Takes in a struct which implements the Serialize trait. 
+//! Takes in a struct which implements the Serialize trait, and adds it to the collection. 
 //! 
 //! # Examples
 //! 

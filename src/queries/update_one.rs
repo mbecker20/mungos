@@ -6,7 +6,7 @@
 //! 
 //! # Examples
 //! 
-//!     ``` 
+//! ``` 
 //!     use mungos::{Mungos};
 //!     use serde::{Serialize, Deserialize};
 //!     

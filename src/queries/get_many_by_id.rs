@@ -1,6 +1,6 @@
 //! Retrieves multiple documents from a collection by their id field.
 //! 
-//! Retriees documents from collection if they match the ids specified in the input.
+//! Retrieves documents from collection if they match the ids specified in the input.
 //! Returns a Vec of the type that the collection is assigned to.
 //!  
 //! # Examples
