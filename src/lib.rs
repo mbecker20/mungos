@@ -1,10 +1,6 @@
 use std::time::Duration;
-
-use futures::stream::TryStreamExt;
 use mongodb::{
-    bson::{doc, oid::ObjectId, to_bson, Document},
-    error::Result,
-    options::{ClientOptions, FindOptions},
+    options::ClientOptions,
     Client,
 };
 pub mod queries;
