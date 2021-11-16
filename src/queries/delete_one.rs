@@ -1,10 +1,9 @@
-use mongodb::{error::Result, bson::{doc, oid::ObjectId}};
 use std::str::FromStr;
-
+use mongodb::{bson::{doc, oid::ObjectId}, error::Result};
 use crate::Database;
 
 impl Database {
-  pub async fn delete_one<T>(
+    pub async fn delete_one<T>(
         &self,
         db_name: &str,
         collection_name: &str,
@@ -18,5 +17,4 @@ impl Database {
         collection.delete_one(filter, None).await?;
         Ok(id.to_string())
     }
-
 }
