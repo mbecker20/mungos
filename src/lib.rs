@@ -30,46 +30,4 @@ impl Database {
         println!();
         Database { client }
     }
-
-    pub async fn create_one<T: Serialize>(
-        &self,
-        db_name: &str,
-        collection_name: &str,
-        item: T,
-    ) -> Result<String> {
-    pub async fn update_one<T: Serialize>(
-        &self,
-        db_name: &str,
-        collection_name: &str,
-        id: &str,
-        item: T,
-    ) -> Result<T> {
-        let collection = self
-            .client
-            .database(db_name)
-            .collection::<T>(collection_name);
-        let res = collection.insert_one(item, None).await?;
-        Ok(res.inserted_id.as_object_id().unwrap().to_string())
-        let filter = doc! { "_id": ObjectId::from_str(id).unwrap() };
-        let update = doc! { "$set": to_bson(&item)? };
-        collection.update_one(filter, update, None).await?;
-        Ok(item)
-    }
-
-    pub async fn update_many<T: Serialize>(
-        &self,
-        db_name: &str,
-        collection_name: &str,
-        query: Document,
-        update: Document,
-    ) -> Result<()> {
-        let collection = self
-            .client
-            .database(db_name)
-            .collection::<T>(collection_name);
-        collection.update_many(query, update, None).await?;
-        Ok(())
-    }
-
-    
 }

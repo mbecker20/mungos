@@ -5,5 +5,4 @@ pub mod update_many;
 pub mod delete_one;
 pub mod update_one;
 pub mod get_one;
-pub mod delete_one;
 pub mod create_one;
