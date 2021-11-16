@@ -1,4 +1,5 @@
 pub mod create_one;
+pub mod create_many;
 pub mod delete_one;
 pub mod get_full_collection;
 pub mod get_many_by_id;
