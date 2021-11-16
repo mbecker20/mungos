@@ -1,4 +1,4 @@
-use crate::Database;
+use crate::Collection;
 use futures::stream::TryStreamExt;
 use mongodb::{
     bson::{doc, oid::ObjectId},
@@ -7,22 +7,14 @@ use mongodb::{
 use serde::de::DeserializeOwned;
 use std::str::FromStr;
 
-impl Database {
-    pub async fn get_many_by_id<T: DeserializeOwned + Unpin + Send + Sync>(
-        &self,
-        db_name: &str,
-        collection_name: &str,
-        ids: &Vec<String>,
-    ) -> Result<Vec<T>> {
-        let collection = self
-            .client
-            .database(db_name)
-            .collection::<T>(collection_name);
+impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
+    pub async fn get_many_by_id(&self, ids: &Vec<String>) -> Result<Vec<T>> {
         let ids: Vec<ObjectId> = ids
             .iter()
             .map(|id| ObjectId::from_str(id).unwrap())
             .collect();
-        let mut cursor = collection
+        let mut cursor = self
+            .collection
             .find(
                 doc! {
                     "_id": {

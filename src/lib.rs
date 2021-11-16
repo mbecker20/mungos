@@ -1,15 +1,17 @@
+use mongodb::{options::ClientOptions, Client, Collection as MongoCollection};
 use std::time::Duration;
-use mongodb::{
-    options::ClientOptions,
-    Client,
-};
 pub mod queries;
 
-pub struct Database {
+pub struct Meerkat {
     pub client: Client,
 }
-impl Database {
-    pub async fn new(uri: &str, app_name: &str, timeout: Duration) -> Database {
+
+pub struct Collection<T> {
+    pub collection: MongoCollection<T>,
+}
+
+impl Meerkat {
+    pub async fn new(uri: &str, app_name: &str, timeout: Duration) -> Meerkat {
         // Parse your connection string into an options struct
         let mut client_options = ClientOptions::parse(uri).await.unwrap();
         // Manually set an option
@@ -22,6 +24,12 @@ impl Database {
         println!("==== connected to mongo ====");
         println!("============================");
         println!();
-        Database { client }
+        Meerkat { client }
+    }
+
+    pub fn collection<T>(&self, db_name: &str, collection_name: &str) -> Collection<T> {
+        Collection {
+            collection: self.client.database(db_name).collection(collection_name),
+        }
     }
 }

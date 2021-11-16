@@ -1,20 +1,17 @@
+use crate::Collection;
+use mongodb::{
+    bson::{doc, oid::ObjectId},
+    error::Result,
+};
 use std::str::FromStr;
-use mongodb::{bson::{doc, oid::ObjectId}, error::Result};
-use crate::Database;
 
-impl Database {
-    pub async fn delete_one<T>(
+impl<T> Collection<T> {
+    pub async fn delete_one(
         &self,
-        db_name: &str,
-        collection_name: &str,
         id: &str,
     ) -> Result<String> {
-        let collection = self
-            .client
-            .database(db_name)
-            .collection::<T>(collection_name);
         let filter = doc! { "_id": ObjectId::from_str(id).unwrap() };
-        collection.delete_one(filter, None).await?;
+        self.collection.delete_one(filter, None).await?;
         Ok(id.to_string())
     }
 }
