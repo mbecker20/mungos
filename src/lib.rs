@@ -31,37 +31,6 @@ impl Database {
         Database { client }
     }
 
-    pub async fn get_one<T: DeserializeOwned + Unpin + Send + Sync>(
-        &self,
-        db_name: &str,
-        collection_name: &str,
-        id: &str,
-    ) -> Result<T> {
-        let collection = self
-            .client
-            .database(db_name)
-            .collection::<T>(collection_name);
-        let item = collection
-            .find_one(Some(doc! { "_id": ObjectId::from_str(id).unwrap() }), None)
-            .await?
-            .unwrap();
-        Ok(item)
-    }
-
-    pub async fn create_one<T: Serialize>(
-        &self,
-        db_name: &str,
-        collection_name: &str,
-        item: T,
-    ) -> Result<String> {
-        let collection = self
-            .client
-            .database(db_name)
-            .collection::<T>(collection_name);
-        let res = collection.insert_one(item, None).await?;
-        Ok(res.inserted_id.as_object_id().unwrap().to_string())
-    }
-
     pub async fn update_one<T: Serialize>(
         &self,
         db_name: &str,
