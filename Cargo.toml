@@ -5,7 +5,6 @@ edition = "2021"
 authors = ["MoghTech"]
 description = "MongoDB in rust, simplified"
 license = "MIT"
-email = "moghtech@gmail.com"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
