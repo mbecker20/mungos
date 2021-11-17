@@ -1,14 +1,5 @@
-use mongodb::{Collection as MongoCollection};
-
-pub mod queries;
-
-pub mod mungos;
-
-pub use crate::mungos::Mungos;
-
-pub struct Collection<T> {
-    pub collection: MongoCollection<T>,
-}
-
+mod queries;
+mod mungos;
+mod collection;
 pub use mongodb::{options::FindOptions, bson::doc};
-
+pub use crate::{mungos::Mungos, collection::Collection};

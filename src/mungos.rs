@@ -1,13 +1,10 @@
 use std::time::Duration;
-
 use mongodb::{options::ClientOptions, Client};
-
 use crate::Collection;
 
 pub struct Mungos {
     pub client: Client,
 }
-
 
 impl Mungos {
     pub async fn new(uri: &str, app_name: &str, timeout: Duration) -> Mungos {
