@@ -41,7 +41,7 @@ impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
             .sort(doc! { "_id": -1 })
             .limit(num_items)
             .build();
-        let mut cursor = self.collection.find(doc! {}, find_options).await?;
+        let mut cursor = self.collection.find(None, find_options).await?;
         let mut items = Vec::new();
         let mut step = 0;
         while let Some(item) = cursor.try_next().await? {
