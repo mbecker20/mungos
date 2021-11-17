@@ -2,7 +2,9 @@ use mongodb::{Collection as MongoCollection};
 
 pub mod queries;
 
-pub struct Mungos;
+pub mod mungos;
+
+pub use crate::mungos::Mungos;
 
 pub struct Collection<T> {
     pub collection: MongoCollection<T>,

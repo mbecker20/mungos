@@ -1,4 +1,8 @@
+use std::time::Duration;
+
 use mongodb::{options::ClientOptions, Client};
+
+use crate::Collection;
 
 pub struct Mungos {
     pub client: Client,
