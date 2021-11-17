@@ -20,9 +20,10 @@
 //!     let collection = db.connection::<Item>("db name", "collection name");
 //! 
 //!     let n = 10
-//!     //returns the 10 most recent docs in the collection, 
+//!     let skip = 2
+//!     //returns the n / skip = 5 most recent docs in the collection, 
 //!     //in order of oldest to latest
-//!     let items = collection.get_most_recent(n).await.unwrap();
+//!     let items = collection.get_most_recent_with_skip(n, skip).await.unwrap();
 //! 
 //! ```
 //! 
@@ -35,10 +36,11 @@ use serde::de::DeserializeOwned;
 use crate::Collection;
 
 impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
-    pub async fn get_most_recent(&self, num_items: i64) -> Result<Vec<T>> {
+    pub async fn get_most_recent_with_skip(&self, num_items: i64, skip: u64) -> Result<Vec<T>> {
         let find_options = FindOptions::builder()
             .sort(doc! { "_id": -1 })
             .limit(num_items)
+            .skip(skip)
             .build();
         let mut cursor = self.collection.find(doc! {}, find_options).await?;
         let mut items = Vec::new();
