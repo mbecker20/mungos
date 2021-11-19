@@ -3,7 +3,7 @@ name = "mungos"
 version = "0.0.11"
 edition = "2021"
 authors = ["MoghTech"]
-description = "MongoDB in rust, simplified"
+description = "MongoDB in rust, simplified."
 license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
