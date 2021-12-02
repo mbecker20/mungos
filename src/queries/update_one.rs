@@ -7,36 +7,54 @@
 //! # Examples
 //! 
 //! ``` 
-//!     use mungos::{Mungos};
+//!     use mungos::{Mungos, Update, doc, to_bson};
 //!     use serde::{Serialize, Deserialize};
 //!     
 //!     #[derive(Debug, Serialize, Deserialize)]
-//!     struct Item {  
-//!         field: String
+//!     struct Item {
+//!         field0: String,
+//!         field1: String,
+//!     }
+//! 
+//!     #[derive(Debug, Serialize, Deserialize, Clone)]
+//!     struct ItemUpdate {
+//!         field1: String // update can push a different serializable type to perform fine grained updates
 //!     }
 //! 
 //!     let db = Mungos.new("uri", "app name", timeout).await;
 //!     let collection = db.connection::<Item>("db name", "collection name");
 //!     
 //!     let id = "..."
-//!     let new_item = Item { field: "..." }
-//!     let items = collection.update_one(id, item).await.unwrap();    
+//!     let update = ItemUpdate { field1: "..." }
+//!     collection.update_one(id, Update::Regular(update.clone())).await.unwrap();
+//!     collection.update_one(id, Update::Custom(doc! { "$set": to_bson(update) }))
 //! ```
 //! 
 
 use crate::Collection;
 use mongodb::{
-    bson::{doc, oid::ObjectId, to_bson},
+    bson::{doc, Document, oid::ObjectId, to_bson},
     error::Result,
 };
 use serde::Serialize;
 use std::str::FromStr;
 
-impl<T: Serialize> Collection<T> {
-    pub async fn update_one(&self, id: &str, item: T) -> Result<T> {
+pub enum Update<T> {
+    Regular(T),
+    Custom(Document)
+}
+
+impl<Any> Collection<Any> {
+    pub async fn update_one<T: Serialize>(&self, id: &str, update: Update<T>) -> Result<()> {
         let filter = doc! { "_id": ObjectId::from_str(id).unwrap() };
-        let update = doc! { "$set": to_bson(&item)? };
+        let update = match update {
+            Update::Regular(update) => {
+                doc! { "$set": to_bson(&update)? }
+            },
+            Update::Custom(doc) => doc
+
+        };
         self.collection.update_one(filter, update, None).await?;
-        Ok(item)
+        Ok(())
     }
 }
