@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "publish": "cargo publish",
+    "format": "cargo fmt",
+    "check": "cargo check"
+  }
+}
