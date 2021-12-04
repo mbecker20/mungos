@@ -15,11 +15,11 @@ impl Mungos {
         client_options.connect_timeout = Some(timeout);
         // Get a handle to the cluster
         let client = Client::with_options(client_options).unwrap();
-        println!();
-        println!("============================");
-        println!("==== connected to mongo ====");
-        println!("============================");
-        println!();
+        // println!();
+        // println!("============================");
+        // println!("==== connected to mongo ====");
+        // println!("============================");
+        // println!();
         Mungos { client }
     }
 
