@@ -35,9 +35,10 @@ use serde::de::DeserializeOwned;
 use crate::Collection;
 
 impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
-    pub async fn get_most_recent_with_filter(&self, num_items: i64, filter: Document) -> Result<Vec<T>> {
+    pub async fn get_most_recent_with_filter(&self, num_items: i64, filter: Document, offset: u64) -> Result<Vec<T>> {
         let find_options = FindOptions::builder()
             .sort(doc! { "_id": -1 })
+            .skip(offset)
             .limit(num_items)
             .build();
         let mut cursor = self.collection.find(filter, find_options).await?;

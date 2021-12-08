@@ -1,6 +1,7 @@
 //! Retrieves the n most recent documents in a collection.
 //! 
-//! Retrieves the n most recent items from the collection, and returns a Vec of the type that the collection is assigned to.
+//! Retrieves the n most recent items from the collection, pushed back by offset,
+//! and returns a Vec of the type that the collection is assigned to.
 //! 
 //! If n is greater than the number of documents in the collection, the 0th index of the returned Vec
 //! will be the first document in the collection ..
@@ -22,7 +23,7 @@
 //!     let n = 10
 //!     //returns the 10 most recent docs in the collection, 
 //!     //in order of oldest to latest
-//!     let items = collection.get_most_recent(n).await.unwrap();
+//!     let items = collection.get_most_recent(n, 0).await.unwrap();
 //! 
 //! ```
 //! 
@@ -35,9 +36,10 @@ use serde::de::DeserializeOwned;
 use crate::Collection;
 
 impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
-    pub async fn get_most_recent(&self, num_items: i64) -> Result<Vec<T>> {
+    pub async fn get_most_recent(&self, num_items: i64, offset: u64) -> Result<Vec<T>> {
         let find_options = FindOptions::builder()
             .sort(doc! { "_id": -1 })
+            .skip(offset)
             .limit(num_items)
             .build();
         let mut cursor = self.collection.find(None, find_options).await?;
