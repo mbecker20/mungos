@@ -37,11 +37,11 @@ use serde::de::DeserializeOwned;
 use crate::Collection;
 
 impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
-    pub async fn get_most_recent_with_skip(&self, num_items: i64, skip: usize, offset: u64) -> Result<Vec<T>> {
+    pub async fn get_most_recent_with_skip(&self, num_items: i64, skip: i64, offset: u64) -> Result<Vec<T>> {
         let find_options = FindOptions::builder()
             .sort(doc! { "_id": -1 })
             .skip(offset)
-            .limit(num_items)
+            .limit(num_items * skip)
             .build();
         let mut cursor = self.collection.find(None, find_options).await?;
         let mut items = Vec::new();
