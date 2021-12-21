@@ -2,6 +2,7 @@ use std::time::Duration;
 use mongodb::{options::ClientOptions, Client};
 use crate::Collection;
 
+#[derive(Clone)]
 pub struct Mungos {
     pub client: Client,
 }
