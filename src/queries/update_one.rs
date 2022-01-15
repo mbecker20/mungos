@@ -21,7 +21,7 @@
 //!         field1: String // update can push a different serializable type to perform fine grained updates
 //!     }
 //! 
-//!     let db = Mungos.new("uri", "app name", timeout).await;
+//!     let db = Mungos::new("uri", "app name", timeout).await;
 //!     let collection = db.connection::<Item>("db name", "collection name");
 //!     
 //!     let id = "..."

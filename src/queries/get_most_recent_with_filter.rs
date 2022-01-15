@@ -16,7 +16,7 @@
 //!         field: String
 //!     }
 //! 
-//!     let db = Mungos.new("uri", "app name", timeout).await;
+//!     let db = Mungos::new("uri", "app name", timeout).await;
 //!     let collection = db.connection::<Item>("db name", "collection name");
 //! 
 //!     let n = 10

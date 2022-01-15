@@ -5,15 +5,16 @@
 //! # Examples
 //! 
 //! ```
-//!     use mungos::{Mungos}
+//!     use mungos::{Mungos, ObjectId}
 //!     use serde::{Serialize, Deserialize}
 //!     
 //!     #[derive(Debug, Serialize, Deserialize)]
-//!     struct Item {  
+//!     struct Item {
+//!         _id: ObjectId
 //!         field: String
 //!     }
 //! 
-//!     let db = Mungos.new("uri", "app name", timeout).await;
+//!     let db = Mungos::new("uri", "app name", timeout).await;
 //!     let collection = db.connection::<Item>("db name", "collection name");
 //!     
 //!     let id = "...";
