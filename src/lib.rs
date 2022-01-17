@@ -1,7 +1,11 @@
-mod queries;
-mod mungos;
 mod collection;
 pub mod helpers;
-pub use mongodb::{options::FindOptions, bson::{doc, oid::ObjectId, Document, to_bson}, error::Result};
-pub use serde::{Serialize, Deserialize};
-pub use crate::{mungos::Mungos, collection::Collection, queries::update_one::Update};
+mod mungos;
+mod queries;
+pub use crate::{collection::Collection, mungos::Mungos, queries::update_one::Update};
+pub use mongodb::{
+    bson::{doc, oid::ObjectId, to_bson, Document},
+    error::Result,
+    options::FindOptions,
+};
+pub use serde::{Deserialize, Serialize};

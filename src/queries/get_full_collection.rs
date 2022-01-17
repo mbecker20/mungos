@@ -1,10 +1,10 @@
 //! Retrieves all the documents in a collection.
-//! 
+//!
 //! Retrieves the entire collection, and needs to be assigned to some variable.
-//! Returns a Vec of the type that the collection is assigned to. 
-//! 
+//! Returns a Vec of the type that the collection is assigned to.
+//!
 //! # Examples
-//! 
+//!
 //! ```
 //!     use mungos::{Mungos}
 //!     use serde::{Serialize, Deserialize}
@@ -17,12 +17,11 @@
 //!     
 //!     let db = Mungos::new("uri", "app name", timeout).await;
 //!     let collection = db.connection::<Item>("db name", "collection name");
-//! 
+//!
 //!     let items = collection.get_full_collection().await.unwrap();
-//! 
+//!
 //! ```
-//! 
-
+//!
 
 use futures::stream::TryStreamExt;
 use mongodb::error::Result;

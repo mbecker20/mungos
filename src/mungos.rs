@@ -1,6 +1,6 @@
-use std::time::Duration;
-use mongodb::{options::ClientOptions, Client};
 use crate::Collection;
+use mongodb::{options::ClientOptions, Client};
+use std::time::Duration;
 
 #[derive(Clone)]
 pub struct Mungos {

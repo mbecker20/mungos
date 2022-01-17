@@ -1,9 +1,9 @@
 //! Creates a single entry in the specified collection.
-//! 
-//! Takes in a struct which implements the Serialize trait, and adds it to the collection. 
-//! 
+//!
+//! Takes in a struct which implements the Serialize trait, and adds it to the collection.
+//!
 //! # Examples
-//! 
+//!
 //! ```
 //!     use mungos::{Mungos}
 //!     use serde::{Serialize, Deserialize}
@@ -15,13 +15,12 @@
 //!     
 //!     let db = Mungos::new("uri", "app name", timeout).await;
 //!     let collection = db.connection::<Item>("db name", "collection name");
-//! 
+//!
 //!     let item = Item { field: "".to_string() };
 //!     collection.create_one(item).await.unwrap();
-//! 
+//!
 //! ```
-//! 
-
+//!
 
 use mongodb::error::Result;
 use serde::Serialize;

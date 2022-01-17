@@ -1,12 +1,12 @@
 //! Retrieves multiple documents by their id field.
-//! 
+//!
 //! Updates a single document in the collection, replacing it with the document provided into this function.
-//! 
-//! The input must implement the Serializable trait in order for mongoDB to store it. 
-//! 
+//!
+//! The input must implement the Serializable trait in order for mongoDB to store it.
+//!
 //! # Examples
-//! 
-//! ``` 
+//!
+//! ```
 //!     use mungos::{Mungos, Update, doc, to_bson};
 //!     use serde::{Serialize, Deserialize};
 //!     
@@ -15,12 +15,12 @@
 //!         field0: String,
 //!         field1: String,
 //!     }
-//! 
+//!
 //!     #[derive(Debug, Serialize, Deserialize, Clone)]
 //!     struct ItemUpdate {
 //!         field1: String // update can push a different serializable type to perform fine grained updates
 //!     }
-//! 
+//!
 //!     let db = Mungos::new("uri", "app name", timeout).await;
 //!     let collection = db.connection::<Item>("db name", "collection name");
 //!     
@@ -29,11 +29,11 @@
 //!     collection.update_one(id, Update::Regular(update.clone())).await.unwrap();
 //!     collection.update_one(id, Update::Custom(doc! { "$set": to_bson(update) }))
 //! ```
-//! 
+//!
 
 use crate::Collection;
 use mongodb::{
-    bson::{doc, Document, oid::ObjectId, to_bson},
+    bson::{doc, oid::ObjectId, to_bson, Document},
     error::Result,
 };
 use serde::Serialize;
@@ -41,7 +41,7 @@ use std::str::FromStr;
 
 pub enum Update<T> {
     Regular(T),
-    Custom(Document)
+    Custom(Document),
 }
 
 impl<Any> Collection<Any> {
@@ -50,9 +50,8 @@ impl<Any> Collection<Any> {
         let update = match update {
             Update::Regular(update) => {
                 doc! { "$set": to_bson(&update)? }
-            },
-            Update::Custom(doc) => doc
-
+            }
+            Update::Custom(doc) => doc,
         };
         self.collection.update_one(filter, update, None).await?;
         Ok(())

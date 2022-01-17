@@ -1,10 +1,10 @@
 //! Retrieves multiple documents from a collection by their id field.
-//! 
+//!
 //! Retrieves documents from collection if they match the ids specified in the input.
 //! Returns a Vec of the type that the collection is assigned to.
 //!  
 //! # Examples
-//! 
+//!
 //! ```
 //!     use mungos::{Mungos}
 //!     use serde::{Serialize, Deserialize}
@@ -13,15 +13,15 @@
 //!     struct Item {  
 //!         field: String
 //!     }
-//! 
+//!
 //!     let db = Mungos::new("uri", "app name", timeout).await;
 //!     let collection = db.connection::<Item>("db name", "collection name");
-//! 
+//!
 //!     let ids = Vec::from(["...", "...", "..."]);
 //!     collection.get_many_by_id(ids).await.unwrap();
-//! 
+//!
 //! ```
-//! 
+//!
 
 use crate::Collection;
 use futures::stream::TryStreamExt;
