@@ -18,20 +18,21 @@
 //!     let db = Mungos::new("uri", "app name", timeout).await;
 //!     let collection = db.connection::<Item>("db name", "collection name");
 //!
-//!     let items = collection.get_full_collection().await.unwrap();
+//!     // can pass filter doc
+//!     let items = collection.get_many(None).await.unwrap();
 //!
 //! ```
 //!
 
 use futures::stream::TryStreamExt;
-use mongodb::error::Result;
+use mongodb::{error::Result, bson::Document};
 use serde::de::DeserializeOwned;
 
 use crate::Collection;
 
 impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
-    pub async fn get_full_collection(&self) -> Result<Vec<T>> {
-        let mut cursor = self.collection.find(None, None).await?;
+    pub async fn get_many(&self, filter: impl Into<Option<Document>>) -> Result<Vec<T>> {
+        let mut cursor = self.collection.find(filter, None).await?;
         let mut items = Vec::new();
         while let Some(item) = cursor.try_next().await? {
             items.push(item);

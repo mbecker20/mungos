@@ -6,7 +6,7 @@ pub async fn move_to_new_collection<T: Serialize + DeserializeOwned + Unpin + Se
     source_collection: Collection<T>,
     target_collection: Collection<T>,
 ) -> Result<()> {
-    let items = source_collection.get_full_collection().await?;
+    let items = source_collection.get_many(None).await?;
     target_collection.create_many(items).await?;
     Ok(())
 }

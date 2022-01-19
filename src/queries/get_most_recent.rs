@@ -23,25 +23,26 @@
 //!     let n = 10
 //!     //returns the 10 most recent docs in the collection,
 //!     //in order of oldest to latest
-//!     let items = collection.get_most_recent(n, 0).await.unwrap();
+//!     //can pass a filter doc
+//!     let items = collection.get_most_recent(n, 0, None).await.unwrap();
 //!
 //! ```
 //!
 
 use futures::stream::TryStreamExt;
-use mongodb::{bson::doc, error::Result, options::FindOptions};
+use mongodb::{bson::{doc, Document}, error::Result, options::FindOptions};
 use serde::de::DeserializeOwned;
 
 use crate::Collection;
 
 impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
-    pub async fn get_most_recent(&self, num_items: i64, offset: u64) -> Result<Vec<T>> {
+    pub async fn get_most_recent(&self, num_items: i64, offset: u64, filter: impl Into<Option<Document>>) -> Result<Vec<T>> {
         let find_options = FindOptions::builder()
             .sort(doc! { "_id": -1 })
             .skip(offset)
             .limit(num_items)
             .build();
-        let mut cursor = self.collection.find(None, find_options).await?;
+        let mut cursor = self.collection.find(filter, find_options).await?;
         let mut items = Vec::new();
         while let Some(item) = cursor.try_next().await? {
             items.push(item);
