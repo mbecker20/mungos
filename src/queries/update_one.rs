@@ -41,6 +41,7 @@ use std::str::FromStr;
 
 pub enum Update<T> {
     Regular(T),
+    Set(Document),
     Custom(Document),
 }
 
@@ -50,7 +51,8 @@ impl<Any> Collection<Any> {
         let update = match update {
             Update::Regular(update) => {
                 doc! { "$set": to_bson(&update)? }
-            }
+            },
+            Update::Set(doc) => doc! { "$set": doc },
             Update::Custom(doc) => doc,
         };
         self.collection.update_one(filter, update, None).await?;
