@@ -51,7 +51,7 @@ impl<Any> Collection<Any> {
         let update = match update {
             Update::Regular(update) => {
                 doc! { "$set": to_bson(&update)? }
-            },
+            }
             Update::Set(doc) => doc! { "$set": doc },
             Update::Custom(doc) => doc,
         };

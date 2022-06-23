@@ -1,6 +1,6 @@
 use crate::Collection;
 use mongodb::{options::ClientOptions, Client};
-use std::time::Duration;
+use std::{sync::Arc, time::Duration};
 
 #[derive(Clone)]
 pub struct Mungos {
@@ -28,5 +28,11 @@ impl Mungos {
         Collection {
             collection: self.client.database(db_name).collection(collection_name),
         }
+    }
+
+    pub fn arc_collection<T>(&self, db_name: &str, collection_name: &str) -> Arc<Collection<T>> {
+        Arc::new(Collection {
+            collection: self.client.database(db_name).collection(collection_name),
+        })
     }
 }

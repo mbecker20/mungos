@@ -30,7 +30,11 @@
 //!
 
 use futures::stream::TryStreamExt;
-use mongodb::{bson::{doc, Document}, error::Result, options::FindOptions};
+use mongodb::{
+    bson::{doc, Document},
+    error::Result,
+    options::FindOptions,
+};
 use serde::de::DeserializeOwned;
 
 use crate::Collection;
@@ -41,7 +45,7 @@ impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
         num_items: i64,
         skip: i64,
         offset: u64,
-        filter: impl Into<Option<Document>>
+        filter: impl Into<Option<Document>>,
     ) -> Result<Vec<T>> {
         let find_options = FindOptions::builder()
             .sort(doc! { "_id": -1 })

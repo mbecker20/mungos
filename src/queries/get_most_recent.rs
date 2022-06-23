@@ -30,13 +30,22 @@
 //!
 
 use futures::stream::TryStreamExt;
-use mongodb::{bson::{doc, Document}, error::Result, options::FindOptions};
+use mongodb::{
+    bson::{doc, Document},
+    error::Result,
+    options::FindOptions,
+};
 use serde::de::DeserializeOwned;
 
 use crate::Collection;
 
 impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
-    pub async fn get_most_recent(&self, num_items: i64, offset: u64, filter: impl Into<Option<Document>>) -> Result<Vec<T>> {
+    pub async fn get_most_recent(
+        &self,
+        num_items: i64,
+        offset: u64,
+        filter: impl Into<Option<Document>>,
+    ) -> Result<Vec<T>> {
         let find_options = FindOptions::builder()
             .sort(doc! { "_id": -1 })
             .skip(offset)

@@ -25,7 +25,7 @@
 //!
 
 use futures::stream::TryStreamExt;
-use mongodb::{error::Result, bson::Document};
+use mongodb::{bson::Document, error::Result};
 use serde::de::DeserializeOwned;
 
 use crate::Collection;
