@@ -7,5 +7,6 @@ pub use mongodb::{
     bson::{doc, oid::ObjectId, to_bson, Document},
     error::Result,
     options::FindOptions,
+    IndexModel,
 };
 pub use serde::{Deserialize, Serialize};
