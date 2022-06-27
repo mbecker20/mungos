@@ -23,8 +23,8 @@
 //!     let n = 10
 //!     //returns the 10 most recent docs in the collection,
 //!     //in order of oldest to latest
-//!     //can pass a filter doc
-//!     let items = collection.get_most_recent(n, 0, None).await.unwrap();
+//!     //can pass a filter / projection doc
+//!     let items = collection.get_most_recent(n, 0, None, None).await.unwrap();
 //!
 //! ```
 //!
@@ -45,11 +45,13 @@ impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
         num_items: i64,
         offset: u64,
         filter: impl Into<Option<Document>>,
+        projection: impl Into<Option<Document>>,
     ) -> Result<Vec<T>> {
         let find_options = FindOptions::builder()
             .sort(doc! { "_id": -1 })
             .skip(offset)
             .limit(num_items)
+            .projection(projection)
             .build();
         let mut cursor = self.collection.find(filter, find_options).await?;
         let mut items = Vec::new();
