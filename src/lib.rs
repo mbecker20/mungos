@@ -6,7 +6,7 @@ pub use crate::{collection::Collection, mungos::Mungos, queries::update_one::Upd
 pub use mongodb::{
     bson::{doc, oid::ObjectId, to_bson, Document},
     error::Result,
-    options::FindOptions,
+    options::{FindOptions, Compressor},
     IndexModel,
 };
 pub use serde::{Deserialize, Serialize};
