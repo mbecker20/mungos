@@ -1,6 +1,6 @@
 [package]
 name = "mungos"
-version = "0.2.6"
+version = "0.2.7"
 edition = "2021"
 authors = ["MoghTech"]
 description = "MongoDB in rust, simplified."
@@ -9,7 +9,7 @@ license = "MIT"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-mongodb = "2.2.2"
+mongodb = { version = "2.2.2", features = ["zstd-compression", "zlib-compression", "snappy-compression"] }
 serde = "1.0.130"
 serde_json = "1.0"
 serde_derive = "1.0"
