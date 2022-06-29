@@ -1,5 +1,5 @@
 use crate::Collection;
-use mongodb::{options::{ClientOptions, Compressor}, Client};
+use mongodb::{options::{ClientOptions, Compressor}, Client, error::Result};
 use std::{sync::Arc, time::Duration};
 
 #[derive(Clone)]
@@ -35,5 +35,9 @@ impl Mungos {
         Arc::new(Collection {
             collection: self.client.database(db_name).collection(collection_name),
         })
+    }
+
+    pub async fn list_collections(&self, db_name: &str) -> Result<Vec<String>> {
+        self.client.database(db_name).list_collection_names(None).await
     }
 }
