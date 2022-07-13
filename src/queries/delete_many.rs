@@ -20,11 +20,10 @@
 //!
 
 use crate::Collection;
-use mongodb::{bson::Document, error::Result};
+use mongodb::{bson::Document, error::Result, results::DeleteResult};
 
 impl<T> Collection<T> {
-    pub async fn delete_many(&self, filter: Document) -> Result<()> {
-        self.collection.delete_many(filter, None).await?;
-        Ok(())
+    pub async fn delete_many(&self, filter: Document) -> Result<DeleteResult> {
+        self.collection.delete_many(filter, None).await
     }
 }
