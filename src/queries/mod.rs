@@ -12,3 +12,4 @@ pub mod get_one;
 pub mod get_some;
 pub mod update_many;
 pub mod update_one;
+pub mod upsert;
