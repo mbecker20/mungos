@@ -1,7 +1,8 @@
 use mongodb::{
     bson::{doc, Document},
     error::Result,
-    options::FindOptions, Cursor,
+    options::FindOptions,
+    Cursor,
 };
 use serde::de::DeserializeOwned;
 
@@ -10,7 +11,7 @@ use crate::Collection;
 impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
     pub async fn most_recent_by_cursor(
         &self,
-		field: &str,
+        field: &str,
         num_items: i64,
         offset: u64,
         filter: impl Into<Option<Document>>,

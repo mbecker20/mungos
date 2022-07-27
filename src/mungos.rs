@@ -1,5 +1,9 @@
 use crate::Collection;
-use mongodb::{options::{ClientOptions, Compressor}, Client, error::Result};
+use mongodb::{
+    error::Result,
+    options::{ClientOptions, Compressor},
+    Client,
+};
 use std::{sync::Arc, time::Duration};
 
 #[derive(Clone)]
@@ -8,7 +12,12 @@ pub struct Mungos {
 }
 
 impl Mungos {
-    pub async fn new(uri: &str, app_name: &str, timeout: Duration, compressors: impl Into<Option<Vec<Compressor>>>) -> Mungos {
+    pub async fn new(
+        uri: &str,
+        app_name: &str,
+        timeout: Duration,
+        compressors: impl Into<Option<Vec<Compressor>>>,
+    ) -> Mungos {
         // Parse your connection string into an options struct
         let mut client_options = ClientOptions::parse(uri).await.unwrap();
         // Manually set an option
@@ -38,6 +47,9 @@ impl Mungos {
     }
 
     pub async fn list_collections(&self, db_name: &str) -> Result<Vec<String>> {
-        self.client.database(db_name).list_collection_names(None).await
+        self.client
+            .database(db_name)
+            .list_collection_names(None)
+            .await
     }
 }

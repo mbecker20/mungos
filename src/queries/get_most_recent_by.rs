@@ -2,7 +2,7 @@
 //!
 //! Retrieves the n / skip most recent items from the collection, pushed back by offset,
 //! and returns a Vec of the type that the collection is assigned to.
-//! 
+//!
 //! note a skip of 1 doesn't skip any documents.
 //!
 //! If n is greater than the number of documents in the collection, the 0th index of the returned Vec
@@ -45,7 +45,7 @@ use crate::Collection;
 impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
     pub async fn get_most_recent_by(
         &self,
-		field: &str,
+        field: &str,
         num_items: i64,
         skip: i64,
         offset: u64,
