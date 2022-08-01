@@ -1,0 +1,33 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cargo",
+			"command": "build",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"label": "rust: cargo build"
+		},
+		{
+			"type": "cargo",
+			"command": "run",
+			"group": {
+				"kind": "test",
+				"isDefault": true
+			},
+			"label": "rust: cargo run",
+		},
+		{
+			"type": "cargo",
+			"command": "fmt",
+			"label": "rust: cargo fmt"
+		},
+		{
+			"type": "cargo",
+			"command": "check",
+			"label": "rust: cargo check"
+		}
+	]
+}
