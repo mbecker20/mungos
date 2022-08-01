@@ -1,14 +1,16 @@
-use mongodb::{Collection as MongoCollection, IndexModel, bson::doc, error::Result, results::CreateIndexResult, options::IndexOptions};
+use mongodb::{
+    bson::doc, error::Result, options::IndexOptions, results::CreateIndexResult, Database,
+    IndexModel,
+};
 
 pub struct Collection<T> {
-    pub collection: MongoCollection<T>,
+    pub db: Database,
+    pub collection: mongodb::Collection<T>,
 }
 
 impl<T> Collection<T> {
     pub async fn create_index(&self, field: &str) -> Result<CreateIndexResult> {
-        let index = IndexModel::builder()
-            .keys(doc! { field: 1 })
-            .build();
+        let index = IndexModel::builder().keys(doc! { field: 1 }).build();
         self.collection.create_index(index, None).await
     }
 

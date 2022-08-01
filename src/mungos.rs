@@ -35,15 +35,15 @@ impl Mungos {
     }
 
     pub fn collection<T>(&self, db_name: &str, collection_name: &str) -> Collection<T> {
-        Collection {
-            collection: self.client.database(db_name).collection(collection_name),
-        }
+        let db = self.client.database(db_name);
+        let collection = db.collection(collection_name);
+        Collection { db, collection }
     }
 
     pub fn arc_collection<T>(&self, db_name: &str, collection_name: &str) -> Arc<Collection<T>> {
-        Arc::new(Collection {
-            collection: self.client.database(db_name).collection(collection_name),
-        })
+        let db = self.client.database(db_name);
+        let collection = db.collection(collection_name);
+        Arc::new(Collection { db, collection })
     }
 
     pub async fn list_collections(&self, db_name: &str) -> Result<Vec<String>> {

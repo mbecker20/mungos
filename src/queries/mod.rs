@@ -1,4 +1,5 @@
 pub mod aggregate;
+pub mod bulk_upsert;
 pub mod create_many;
 pub mod create_one;
 pub mod delete_many;
