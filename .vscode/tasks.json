@@ -28,6 +28,11 @@
 			"type": "cargo",
 			"command": "check",
 			"label": "rust: cargo check"
+		},
+		{
+			"type": "cargo",
+			"command": "publish",
+			"label": "rust: cargo publish"
 		}
 	]
 }
