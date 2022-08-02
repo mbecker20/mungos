@@ -19,15 +19,16 @@ impl BulkUpsert {
 
 impl<T> Collection<T> {
     pub async fn bulk_upsert(&self, updates: Vec<BulkUpsert>) -> Result<Document> {
-        let mut update_docs: Vec<Document> = Vec::with_capacity(updates.len());
-        for update in updates {
-            let document = doc! {
-                "q": update.query,
-                "u": update.update,
-                "upsert": true
-            };
-            update_docs.push(document);
-        }
+        let update_docs: Vec<Document> = updates
+            .into_iter()
+            .map(|update| {
+                doc! {
+                    "q": update.query,
+                    "u": update.update,
+                    "upsert": true
+                }
+            })
+            .collect();
         let command = doc! {
             "update": self.collection.name(),
             "updates": update_docs,
