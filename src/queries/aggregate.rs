@@ -1,6 +1,6 @@
+use futures::TryStreamExt;
 use mongodb::{bson::Document, error::Result, options::AggregateOptions, Cursor};
 use serde::de::DeserializeOwned;
-use futures::TryStreamExt;
 
 use crate::Collection;
 

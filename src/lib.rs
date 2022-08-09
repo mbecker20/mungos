@@ -4,7 +4,7 @@ mod mungos;
 mod queries;
 pub use crate::{
     collection::Collection, mungos::Mungos, queries::bulk_upsert::BulkUpsert,
-    queries::update_one::Update,
+    queries::get_sorted_cursor::SortDirection, queries::update_one::Update,
 };
 pub use mongodb::{
     self,
