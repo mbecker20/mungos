@@ -6,7 +6,7 @@ use mongodb::{
 };
 use std::{sync::Arc, time::Duration};
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Mungos {
     pub client: Client,
 }
