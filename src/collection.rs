@@ -3,6 +3,7 @@ use mongodb::{
     IndexModel,
 };
 
+#[derive(Clone, Debug)]
 pub struct Collection<T> {
     pub db: Database,
     pub collection: mongodb::Collection<T>,
