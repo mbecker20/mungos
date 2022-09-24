@@ -38,8 +38,7 @@ impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
             .iter()
             .map(|id| ObjectId::from_str(id).unwrap())
             .collect();
-        let mut cursor = self
-            .collection
+        self.collection
             .find(
                 doc! {
                     "_id": {
@@ -48,11 +47,8 @@ impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
                 },
                 None,
             )
-            .await?;
-        let mut items = Vec::new();
-        while let Some(item) = cursor.try_next().await? {
-            items.push(item);
-        }
-        Ok(items)
+            .await?
+            .try_collect()
+            .await
     }
 }

@@ -1,5 +1,10 @@
-use mongodb::{bson::Document, error::Result, options::FindOneOptions};
+use mongodb::{
+    bson::{doc, oid::ObjectId, Document},
+    error::Result,
+    options::FindOneOptions,
+};
 use serde::de::DeserializeOwned;
+use std::str::FromStr;
 
 use crate::Collection;
 
@@ -10,5 +15,11 @@ impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
         options: impl Into<Option<FindOneOptions>>,
     ) -> Result<Option<T>> {
         self.collection.find_one(filter, options).await
+    }
+
+    pub async fn find_one_by_id(&self, id: &str) -> Result<Option<T>> {
+        self.collection
+            .find_one(Some(doc! { "_id": ObjectId::from_str(id).unwrap() }), None)
+            .await
     }
 }

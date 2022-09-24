@@ -11,14 +11,14 @@ use crate::Collection;
 impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
     pub async fn most_recent_by_cursor(
         &self,
-        field: &str,
+        most_recent_by_field: &str,
         num_items: i64,
         offset: u64,
         filter: impl Into<Option<Document>>,
         projection: impl Into<Option<Document>>,
     ) -> Result<Cursor<T>> {
         let find_options = FindOptions::builder()
-            .sort(doc! { field: -1 })
+            .sort(doc! { most_recent_by_field: -1 })
             .skip(offset)
             .limit(num_items)
             .projection(projection)
