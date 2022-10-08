@@ -65,6 +65,7 @@ pub enum AggStage {
     UnionWith(Document),
     Unset(String),
     Unwind(Document),
+    Doc(Document),
 }
 
 use AggStage::*;
@@ -230,7 +231,8 @@ fn get_agg_stage_as_doc(stage: AggStage) -> Document {
             doc! {
                 "$unwind": doc
             }
-        }
+        },
+        Doc(doc) => doc,
     }
 }
 

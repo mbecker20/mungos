@@ -1,6 +1,6 @@
 [package]
 name = "mungos"
-version = "0.2.20"
+version = "0.2.21"
 edition = "2021"
 authors = ["MoghTech"]
 description = "MongoDB in rust, simplified."
