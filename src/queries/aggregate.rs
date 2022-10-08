@@ -20,7 +20,7 @@ impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
             .await
     }
 
-    pub async fn aggregate_collect<R: DeserializeOwned>(
+    pub async fn aggregate_collect(
         &self,
         pipeline: impl IntoIterator<Item = impl Into<Document>>,
         options: impl Into<Option<AggregateOptions>>,
