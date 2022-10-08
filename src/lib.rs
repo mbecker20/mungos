@@ -3,8 +3,12 @@ pub mod helpers;
 mod mungos;
 mod queries;
 pub use crate::{
-    collection::Collection, mungos::Mungos, queries::bulk_upsert::BulkUpsert,
-    queries::get_sorted_cursor::SortDirection, queries::update_one::Update,
+    collection::Collection,
+    mungos::Mungos,
+    queries::{
+        aggregate::AggStage, bulk_upsert::BulkUpsert, get_sorted_cursor::SortDirection,
+        update_one::Update,
+    },
 };
 pub use mongodb::{
     self,
