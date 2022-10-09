@@ -32,12 +32,12 @@ impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
     }
 }
 
-pub enum AggStage {
+pub enum AggStage<'a> {
     AddFields(Document),
     Bucket(Document),
     BucketAuto(Document),
     CollStats(Document),
-    Count(String),
+    Count(&'a str),
     Densify(Document),
     Facet(Document),
     Fill(Document),
@@ -49,7 +49,7 @@ pub enum AggStage {
     Lookup(Document),
     Match(Document),
     Merge(Document),
-    Out(String),
+    Out(&'a str),
     Project(Document),
     Redact(Document),
     ReplaceWith(Document),
@@ -63,7 +63,7 @@ pub enum AggStage {
     Sort(Document),
     SortByCount(Document),
     UnionWith(Document),
-    Unset(String),
+    Unset(&'a str),
     Unwind(Document),
     Doc(Document),
 }
@@ -236,7 +236,7 @@ fn get_agg_stage_as_doc(stage: AggStage) -> Document {
     }
 }
 
-impl Into<Document> for AggStage {
+impl<'a> Into<Document> for AggStage<'a> {
     fn into(self) -> Document {
         get_agg_stage_as_doc(self)
     }
