@@ -17,21 +17,22 @@ impl Mungos {
         app_name: &str,
         timeout: Duration,
         compressors: impl Into<Option<Vec<Compressor>>>,
-    ) -> Mungos {
+    ) -> Result<Mungos> {
         // Parse your connection string into an options struct
-        let mut client_options = ClientOptions::parse(uri).await.unwrap();
+        let mut client_options = ClientOptions::parse(uri).await?;
         // Manually set an option
         client_options.app_name = Some(app_name.to_string());
         client_options.connect_timeout = Some(timeout);
         client_options.compressors = compressors.into();
         // Get a handle to the cluster
-        let client = Client::with_options(client_options).unwrap();
+        let client = Client::with_options(client_options)?;
         // println!();
         // println!("============================");
         // println!("==== connected to mongo ====");
         // println!("============================");
         // println!();
-        Mungos { client }
+        let mungos = Mungos { client };
+        Ok(mungos)
     }
 
     pub fn collection<T>(&self, db_name: &str, collection_name: &str) -> Collection<T> {

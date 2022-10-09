@@ -231,7 +231,7 @@ fn get_agg_stage_as_doc(stage: AggStage) -> Document {
             doc! {
                 "$unwind": doc
             }
-        },
+        }
         Doc(doc) => doc,
     }
 }

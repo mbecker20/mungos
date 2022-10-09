@@ -32,10 +32,8 @@
 //!
 
 use crate::Collection;
-use mongodb::{
-    bson::{doc, oid::ObjectId, to_bson, Document},
-    error::Result,
-};
+use anyhow::Context;
+use mongodb::bson::{doc, oid::ObjectId, to_bson, Document};
 use serde::Serialize;
 use std::str::FromStr;
 
@@ -46,8 +44,13 @@ pub enum Update<T> {
 }
 
 impl<Any> Collection<Any> {
-    pub async fn update_one<T: Serialize>(&self, id: &str, update: Update<T>) -> Result<()> {
-        let filter = doc! { "_id": ObjectId::from_str(id).unwrap() };
+    pub async fn update_one<T: Serialize>(
+        &self,
+        id: &str,
+        update: Update<T>,
+    ) -> anyhow::Result<()> {
+        let filter =
+            doc! { "_id": ObjectId::from_str(id).context("failed to parse id into ObjectId")? };
         let update = match update {
             Update::Regular(update) => {
                 doc! { "$set": to_bson(&update)? }
