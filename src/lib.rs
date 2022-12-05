@@ -12,7 +12,10 @@ pub use crate::{
 };
 pub use mongodb::{
     self,
-    bson::{self, doc, oid::ObjectId, to_bson, Document},
+    bson::{
+        self, doc, oid::ObjectId, serde_helpers::deserialize_hex_string_from_object_id, to_bson,
+        Document,
+    },
     error::{self, Error, Result},
     options::{self, Compressor, FindOptions},
     IndexModel,
