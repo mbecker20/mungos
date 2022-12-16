@@ -2,6 +2,7 @@ mod collection;
 pub mod helpers;
 mod mungos;
 mod queries;
+pub mod types;
 pub use crate::{
     collection::Collection,
     mungos::Mungos,
