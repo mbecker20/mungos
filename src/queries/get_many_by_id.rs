@@ -27,13 +27,18 @@ use crate::Collection;
 use futures::stream::TryStreamExt;
 use mongodb::{
     bson::{doc, oid::ObjectId},
-    error::Result, options::FindOptions,
+    error::Result,
+    options::FindOptions,
 };
 use serde::de::DeserializeOwned;
 use std::str::FromStr;
 
 impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
-    pub async fn get_many_by_id(&self, ids: &Vec<String>, options: impl Into<Option<FindOptions>>) -> Result<Vec<T>> {
+    pub async fn get_many_by_id(
+        &self,
+        ids: &Vec<String>,
+        options: impl Into<Option<FindOptions>>,
+    ) -> Result<Vec<T>> {
         let ids: Vec<ObjectId> = ids
             .iter()
             .map(|id| ObjectId::from_str(id).unwrap())
