@@ -19,6 +19,7 @@ impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
         filter: impl Into<Option<Document>>,
         sort_field: &str,
         sort_direction: SortDirection,
+        batch_size: Option<u32>,
     ) -> Result<Cursor<T>> {
         let direction = match sort_direction {
             SortDirection::Ascending => 1,
@@ -26,6 +27,7 @@ impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
         };
         let options = FindOptions::builder()
             .sort(doc! { sort_field: direction })
+            .batch_size(batch_size)
             .build();
         let cursor = self.collection.find(filter, options).await?;
         Ok(cursor)
