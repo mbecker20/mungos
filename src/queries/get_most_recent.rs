@@ -42,15 +42,16 @@ use crate::Collection;
 impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
     pub async fn get_most_recent(
         &self,
-        num_items: i64,
+        index: &str,
+        limit: i64,
         offset: u64,
         filter: impl Into<Option<Document>>,
         projection: impl Into<Option<Document>>,
     ) -> Result<Vec<T>> {
         let find_options = FindOptions::builder()
-            .sort(doc! { "_id": -1 })
+            .sort(doc! { index: -1 })
             .skip(offset)
-            .limit(num_items)
+            .limit(limit)
             .projection(projection)
             .build();
         let mut cursor = self.collection.find(filter, find_options).await?;
