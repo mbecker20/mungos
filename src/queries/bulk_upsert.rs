@@ -1,3 +1,5 @@
+use std::borrow::Borrow;
+
 use mongodb::{
     bson::{doc, Document},
     error::Result,
@@ -18,13 +20,14 @@ impl BulkUpsert {
 }
 
 impl<T> Collection<T> {
-    pub async fn bulk_upsert(&self, updates: Vec<BulkUpsert>) -> Result<Document> {
+    pub async fn bulk_upsert(&self, updates: impl Borrow<Vec<BulkUpsert>>) -> Result<Document> {
         let update_docs: Vec<Document> = updates
+            .borrow()
             .into_iter()
             .map(|update| {
                 doc! {
-                    "q": update.query,
-                    "u": update.update,
+                    "q": &update.query,
+                    "u": &update.update,
                     "upsert": true
                 }
             })
