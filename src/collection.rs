@@ -1,6 +1,9 @@
 use mongodb::{
-    bson::{doc, Document}, error::Result, options::IndexOptions, results::CreateIndexResult, Database,
-    IndexModel,
+    bson::{doc, Document},
+    error::Result,
+    options::IndexOptions,
+    results::CreateIndexResult,
+    Database, IndexModel,
 };
 
 #[derive(Clone, Debug)]
@@ -29,7 +32,10 @@ impl<T> Collection<T> {
         self.collection.create_index(index, None).await
     }
 
-    pub async fn create_unique_index_from_doc(&self, index_doc: Document) -> Result<CreateIndexResult> {
+    pub async fn create_unique_index_from_doc(
+        &self,
+        index_doc: Document,
+    ) -> Result<CreateIndexResult> {
         let options = IndexOptions::builder().unique(true).build();
         let index = IndexModel::builder()
             .keys(index_doc)

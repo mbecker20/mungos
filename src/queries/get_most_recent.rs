@@ -54,11 +54,12 @@ impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
             .limit(limit)
             .projection(projection)
             .build();
-        let mut cursor = self.collection.find(filter, find_options).await?;
-        let mut items = Vec::new();
-        while let Some(item) = cursor.try_next().await? {
-            items.push(item);
-        }
+        let mut items: Vec<_> = self
+            .collection
+            .find(filter, find_options)
+            .await?
+            .try_collect()
+            .await?;
         items.reverse();
         Ok(items)
     }
