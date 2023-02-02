@@ -1,7 +1,7 @@
 use mongodb::{
     bson::{doc, Document},
     error::Result,
-    options::FindOptions,
+    options::{Collation, FindOptions},
     Cursor,
 };
 use serde::de::DeserializeOwned;
@@ -28,6 +28,12 @@ impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
         let options = FindOptions::builder()
             .sort(doc! { sort_field: direction })
             .batch_size(batch_size)
+            .collation(
+                Collation::builder()
+                    .locale("en_US")
+                    .numeric_ordering(true)
+                    .build(),
+            )
             .build();
         let cursor = self.collection.find(filter, options).await?;
         Ok(cursor)
