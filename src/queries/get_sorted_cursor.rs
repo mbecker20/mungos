@@ -20,6 +20,7 @@ impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
         sort_field: &str,
         sort_direction: SortDirection,
         batch_size: impl Into<Option<u32>>,
+        numeric_ordering: impl Into<Option<bool>>,
     ) -> Result<Cursor<T>> {
         let direction = match sort_direction {
             SortDirection::Ascending => 1,
@@ -30,8 +31,8 @@ impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
             .batch_size(batch_size)
             .collation(
                 Collation::builder()
-                    .locale("en_US")
-                    .numeric_ordering(true)
+                    .locale("simple")
+                    .numeric_ordering(numeric_ordering)
                     .build(),
             )
             .build();

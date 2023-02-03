@@ -18,19 +18,11 @@ impl Mungos {
         timeout: Duration,
         compressors: impl Into<Option<Vec<Compressor>>>,
     ) -> Result<Mungos> {
-        // Parse your connection string into an options struct
         let mut client_options = ClientOptions::parse(uri).await?;
-        // Manually set an option
         client_options.app_name = Some(app_name.to_string());
         client_options.connect_timeout = Some(timeout);
         client_options.compressors = compressors.into();
-        // Get a handle to the cluster
         let client = Client::with_options(client_options)?;
-        // println!();
-        // println!("============================");
-        // println!("==== connected to mongo ====");
-        // println!("============================");
-        // println!();
         let mungos = Mungos { client };
         Ok(mungos)
     }
