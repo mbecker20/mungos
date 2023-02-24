@@ -7,8 +7,8 @@ pub use crate::{
     collection::Collection,
     mungos::Mungos,
     queries::{
-        aggregate::AggStage, bulk_upsert::BulkUpsert, get_sorted_cursor::SortDirection,
-        update_one::Update,
+        aggregate::AggStage, bulk_update::BulkUpdate, bulk_upsert::BulkUpsert,
+        get_sorted_cursor::SortDirection, update_one::Update,
     },
 };
 pub use mongodb::{
