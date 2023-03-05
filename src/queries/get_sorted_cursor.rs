@@ -21,12 +21,14 @@ impl<T: DeserializeOwned + Unpin + Send + Sync> Collection<T> {
         sort_direction: SortDirection,
         batch_size: impl Into<Option<u32>>,
         numeric_ordering: impl Into<Option<bool>>,
+        projection: impl Into<Option<Document>>,
     ) -> Result<Cursor<T>> {
         let direction = match sort_direction {
             SortDirection::Ascending => 1,
             SortDirection::Descending => -1,
         };
         let options = FindOptions::builder()
+            .projection(projection)
             .sort(doc! { sort_field: direction })
             .batch_size(batch_size)
             .collation(
