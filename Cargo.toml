@@ -4,6 +4,7 @@ version = "0.3.8"
 edition = "2021"
 authors = ["MoghTech"]
 description = "MongoDB in rust, simplified."
+repository = "https://github.com/mbecker20/mungos"
 license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
