@@ -6,13 +6,13 @@ use std::{sync::Arc, time::Duration};
 
 pub use crate::{
     collection::Collection,
+    helpers::parse_comma_seperated_compressors,
     queries::{
         aggregate::AggStage, bulk_update::BulkUpdate, bulk_upsert::BulkUpsert,
         get_sorted_cursor::SortDirection, update_one::Update,
     },
 };
 use anyhow::{anyhow, Context};
-use helpers::parse_comma_seperated_compressors;
 pub use mongodb::{
     self,
     bson::{
@@ -58,47 +58,39 @@ impl Mungos {
     }
 
     pub async fn new_from_env() -> anyhow::Result<Mungos> {
-        let env: MungosEnv =
-            envy::from_env().context("failed to parse env for mungos new_from_env")?;
-        let uri = if let Some(uri) = env.mongo_uri {
-            uri
-        } else {
-            let address = env.mongo_address.ok_or(anyhow!(
-                "must specify either MONGO_URI or MONGO_ADDRESS in env. got neither"
-            ))?;
-            if let Some(username) = env.mongo_username {
-                let password = env
-                    .mongo_password
-                    .ok_or(anyhow!("must specify MONGO_PASSWORD in env"))?;
-                format!("mongodb://{username}:{password}@{address}")
-            } else {
-                format!("mongodb://{address}")
-            }
-        };
-        let compressors = env
-            .mongo_compressors
-            .map(|c| {
-                parse_comma_seperated_compressors(&c)
-                    .context("failed to parse mongo compressors specified in env")
-            })
-            .transpose()?;
-        let mungos = Mungos::new(
-            &uri,
-            &env.mongo_app_name.unwrap_or("mungos".to_string()),
-            Duration::from_secs(env.mongo_timeout_secs.unwrap_or(3)),
-            compressors,
-        )
-        .await
-        .context("failed to initialize connection to mongo")?;
-        Ok(mungos)
+        Mungos::builder_from_env()?.build().await
     }
 
-    pub fn builder<'a>() -> MungosBuilder<'a> {
+    pub fn builder() -> MungosBuilder {
         MungosBuilder {
-            app_name: "mungos",
+            app_name: "mungos".to_string(),
             timeout: Duration::from_secs(3),
             ..Default::default()
         }
+    }
+
+    pub fn builder_from_env<'a>() -> anyhow::Result<MungosBuilder> {
+        let env: MungosEnv = envy::from_env().context("failed to parse mungos env")?;
+
+        let compressors = env
+                .mongo_compressors
+                .map(|c| {
+                    parse_comma_seperated_compressors(&c)
+                        .context("failed to parse mongo compressors specified in env")
+                })
+                .transpose()?;
+
+        let builder = MungosBuilder {
+            uri: env.mongo_uri,
+            username: env.mongo_username,
+            password: env.mongo_password,
+            address: env.mongo_address,
+            app_name: env.mongo_app_name.unwrap_or("mungos".to_string()),
+            timeout: Duration::from_secs(env.mongo_timeout_secs.unwrap_or(3)),
+            compressors,
+        };
+
+        Ok(builder)
     }
 
     pub fn collection<T>(&self, db_name: &str, collection_name: &str) -> Collection<T> {
@@ -122,18 +114,18 @@ impl Mungos {
 }
 
 #[derive(Default)]
-pub struct MungosBuilder<'a> {
-    uri: Option<&'a str>,
-    username: Option<&'a str>,
-    password: Option<&'a str>,
-    address: Option<&'a str>,
+pub struct MungosBuilder {
+    uri: Option<String>,
+    username: Option<String>,
+    password: Option<String>,
+    address: Option<String>,
 
-    app_name: &'a str,
+    app_name: String,
     timeout: Duration,
     compressors: Option<Vec<Compressor>>,
 }
 
-impl<'a> MungosBuilder<'a> {
+impl MungosBuilder {
     pub async fn build(self) -> anyhow::Result<Mungos> {
         let uri = if let Some(uri) = self.uri {
             uri.to_string()
@@ -151,47 +143,44 @@ impl<'a> MungosBuilder<'a> {
             }
         };
 
-        let mungos = Mungos::new(&uri, self.app_name, self.timeout, self.compressors)
+        let mungos = Mungos::new(&uri, &self.app_name, self.timeout, self.compressors)
             .await
             .context("failed to initialize connection to mongo")?;
 
         Ok(mungos)
     }
 
-    pub fn uri(mut self, uri: impl Into<Option<&'a str>>) -> MungosBuilder<'a> {
-        self.uri = uri.into();
+    pub fn uri(mut self, uri: impl Into<String>) -> MungosBuilder {
+        self.uri = uri.into().into();
         self
     }
 
-    pub fn username(mut self, username: impl Into<Option<&'a str>>) -> MungosBuilder<'a> {
-        self.username = username.into();
+    pub fn username(mut self, username: impl Into<String>) -> MungosBuilder {
+        self.username = username.into().into();
         self
     }
 
-    pub fn password(mut self, password: impl Into<Option<&'a str>>) -> MungosBuilder<'a> {
-        self.password = password.into();
+    pub fn password(mut self, password: impl Into<String>) -> MungosBuilder {
+        self.password = password.into().into();
         self
     }
 
-    pub fn address(mut self, address: impl Into<Option<&'a str>>) -> MungosBuilder<'a> {
-        self.address = address.into();
+    pub fn address(mut self, address: impl Into<String>) -> MungosBuilder {
+        self.address = address.into().into();
         self
     }
 
-    pub fn app_name(mut self, app_name: &'a str) -> MungosBuilder<'a> {
-        self.app_name = app_name;
+    pub fn app_name(mut self, app_name: impl Into<String>) -> MungosBuilder {
+        self.app_name = app_name.into();
         self
     }
 
-    pub fn timeout(mut self, duration: Duration) -> MungosBuilder<'a> {
+    pub fn timeout(mut self, duration: Duration) -> MungosBuilder {
         self.timeout = duration;
         self
     }
 
-    pub fn compressors(
-        mut self,
-        compressors: impl Into<Option<Vec<Compressor>>>,
-    ) -> MungosBuilder<'a> {
+    pub fn compressors(mut self, compressors: impl Into<Option<Vec<Compressor>>>) -> MungosBuilder {
         self.compressors = compressors.into();
         self
     }
