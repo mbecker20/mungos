@@ -114,7 +114,7 @@ impl Mungos {
     }
 }
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub struct MungosBuilder {
     uri: Option<String>,
     username: Option<String>,
