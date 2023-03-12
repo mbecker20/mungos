@@ -1,6 +1,6 @@
 # mungos
 
-inspired by ```mongoose``` npm package, this create contains the ```Mungos``` struct, a wrapper around the (mongodb)[https://crates.io/crates/mongodb] client containing some additional queries and functionality
+inspired by the ```mongoose``` npm package, this crate contains the ```Mungos``` struct, a wrapper around the [mongodb](https://crates.io/crates/mongodb) client containing some additional queries and functionality
 
 # usage
 
