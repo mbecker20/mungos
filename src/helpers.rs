@@ -1,6 +1,7 @@
 use crate::Collection;
+use anyhow::{anyhow, Context};
 use futures::stream::TryStreamExt;
-use mongodb::{error, Cursor};
+use mongodb::{error, options::Compressor, Cursor};
 use serde::{de::DeserializeOwned, Serialize};
 
 pub async fn move_to_new_collection<T: Serialize + DeserializeOwned + Unpin + Send + Sync>(
@@ -28,4 +29,59 @@ pub async fn batch_load_cursor<T: DeserializeOwned + Unpin + Send + Sync>(
         }
     }
     Ok(res)
+}
+
+pub fn parse_comma_seperated_compressors(compressors: &str) -> anyhow::Result<Vec<Compressor>> {
+    compressors
+        .split(",")
+        .map(|c| parse_compressor(c))
+        .collect()
+}
+
+fn parse_compressor(compressor: &str) -> anyhow::Result<Compressor> {
+    if compressor.contains("snappy") {
+        Ok(Compressor::Snappy)
+    } else if compressor.contains("zstd") {
+        let level = compressor
+            .split('(')
+            .collect::<Vec<_>>()
+            .get(1)
+            .map(|l| l.replace(")", ""))
+            .map(|l| {
+                let l = l
+                    .parse::<i32>()
+                    .context("zstd compression level must be i32")?;
+                if l < 1 || l > 22 {
+                    Err(anyhow!(
+                        "ztd compression level must be between 1 and 22. got {l}"
+                    ))
+                } else {
+                    Ok(l)
+                }
+            })
+            .transpose()?;
+        Ok(Compressor::Zstd { level })
+    } else if compressor.contains("zlib") {
+        let level = compressor
+            .split('(')
+            .collect::<Vec<_>>()
+            .get(1)
+            .map(|l| l.replace(")", ""))
+            .map(|l| {
+                let l = l
+                    .parse::<i32>()
+                    .context("zlib compression level must be i32")?;
+                if l < 0 || l > 9 {
+                    Err(anyhow!(
+                        "ztd compression level must be between 0 and 9. got {l}"
+                    ))
+                } else {
+                    Ok(l)
+                }
+            })
+            .transpose()?;
+        Ok(Compressor::Zlib { level })
+    } else {
+        Err(anyhow!("unrecognized compressor: {compressor}"))
+    }
 }
