@@ -11,6 +11,7 @@ pub use crate::{
         aggregate::AggStage, bulk_update::BulkUpdate, bulk_upsert::BulkUpsert,
         get_sorted_cursor::SortDirection, update_one::Update,
     },
+    types::Projection,
 };
 use anyhow::{anyhow, Context};
 pub use mongodb::{
@@ -73,12 +74,12 @@ impl Mungos {
         let env: MungosEnv = envy::from_env().context("failed to parse mungos env")?;
 
         let compressors = env
-                .mongo_compressors
-                .map(|c| {
-                    parse_comma_seperated_compressors(&c)
-                        .context("failed to parse mongo compressors specified in env")
-                })
-                .transpose()?;
+            .mongo_compressors
+            .map(|c| {
+                parse_comma_seperated_compressors(&c)
+                    .context("failed to parse mongo compressors specified in env")
+            })
+            .transpose()?;
 
         let builder = MungosBuilder {
             uri: env.mongo_uri,
