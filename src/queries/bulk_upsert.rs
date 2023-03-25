@@ -65,7 +65,8 @@ impl<T> Collection<T> {
         }
         let error_kind = &*res.as_ref().err().unwrap().kind;
         if let ErrorKind::Command(c) = error_kind {
-            if c.code_name == "BSONObjectTooLarge" && update_docs.len() > 2 {
+            // code 10334 has code_name "BSONObjectTooLarge"
+            if c.code == 10334 && update_docs.len() > 2 {
                 let (u1, u2) = update_docs.split_at(update_docs.len() / 2);
                 let c1 = doc! {
                     "update": self.collection.name(),
