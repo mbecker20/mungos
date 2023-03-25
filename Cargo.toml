@@ -1,6 +1,6 @@
 [package]
 name = "mungos"
-version = "0.3.14"
+version = "0.3.15"
 edition = "2021"
 authors = ["MoghTech"]
 description = "MongoDB in rust, simplified."
@@ -11,6 +11,7 @@ license = "MIT"
 
 [dependencies]
 mongodb = { version = "2.4", features = ["zstd-compression", "zlib-compression", "snappy-compression"] }
+tokio = "1.26"
 serde = "1.0"
 serde_json = "1.0"
 serde_derive = "1.0"
