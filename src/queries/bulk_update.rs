@@ -76,8 +76,8 @@ impl<T> Collection<T> {
                 };
                 let (res1, res2) =
                     tokio::join!(self.db.run_command(c1, None), self.db.run_command(c2, None));
-                let doc1 = res1?;
-                let doc2 = res2?;
+                let doc1 = res1.context("failed again on 1st half of update batch")?;
+                let doc2 = res2.context("failed again on 2nd half of update batch")?;
                 return Ok(doc! {
                     "res1": doc1,
                     "res2": doc2
