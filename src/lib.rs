@@ -1,8 +1,17 @@
-mod collection;
-pub mod helpers;
-mod queries;
-pub mod types;
 use std::{sync::Arc, time::Duration};
+
+use anyhow::{anyhow, Context};
+use mongodb::{
+    error::Result,
+    options::{ClientOptions, Compressor},
+};
+use serde::Deserialize;
+
+pub mod helpers;
+pub mod types;
+
+mod collection;
+mod queries;
 
 pub use crate::{
     collection::Collection,
@@ -13,18 +22,8 @@ pub use crate::{
     },
     types::Projection,
 };
-use anyhow::{anyhow, Context};
-pub use mongodb::{
-    self,
-    bson::{
-        self, doc, oid::ObjectId, serde_helpers::deserialize_hex_string_from_object_id, to_bson,
-        Document,
-    },
-    error::{self, Error, Result},
-    options::{self, ClientOptions, Compressor, FindOptions},
-    IndexModel,
-};
-pub use serde::{Deserialize, Serialize};
+
+pub use mongodb;
 
 #[derive(Clone, Debug)]
 pub struct Mungos {
