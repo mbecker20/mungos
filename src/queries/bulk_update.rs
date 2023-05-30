@@ -24,7 +24,7 @@ impl<T> Collection<T> {
     pub async fn bulk_update(&self, updates: impl Borrow<Vec<BulkUpdate>>) -> Result<Document> {
         let update_docs: Vec<Document> = updates
             .borrow()
-            .into_iter()
+            .iter()
             .map(|update| {
                 doc! {
                     "q": &update.query,
@@ -45,7 +45,7 @@ impl<T> Collection<T> {
     ) -> anyhow::Result<Document> {
         let update_docs: Vec<Document> = updates
             .borrow()
-            .into_iter()
+            .iter()
             .map(|update| {
                 doc! {
                     "q": &update.query,

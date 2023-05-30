@@ -236,8 +236,8 @@ fn get_agg_stage_as_doc(stage: AggStage) -> Document {
     }
 }
 
-impl Into<Document> for AggStage {
-    fn into(self) -> Document {
-        get_agg_stage_as_doc(self)
+impl From<AggStage> for Document {
+    fn from(value: AggStage) -> Document {
+        get_agg_stage_as_doc(value)
     }
 }

@@ -14,7 +14,7 @@
 //!     let db = Mungos::new("uri", "app name", timeout).await;
 //!     let collection = db.connection::<Item>("db name", "collection name");
 //!     
-//! 		// deletes any items that match field: apple
+//!     // deletes any items that match field: apple
 //!     collection.delete_many(doc! { "field": "apple" }).await.unwrap();
 //! ```
 //!

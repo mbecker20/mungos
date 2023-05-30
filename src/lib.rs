@@ -69,7 +69,7 @@ impl Mungos {
         }
     }
 
-    pub fn builder_from_env<'a>() -> anyhow::Result<MungosBuilder> {
+    pub fn builder_from_env() -> anyhow::Result<MungosBuilder> {
         let env: MungosEnv = envy::from_env().context("failed to parse mungos env")?;
 
         let compressors = env
