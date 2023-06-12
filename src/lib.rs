@@ -23,6 +23,8 @@ pub use crate::{
     types::Projection,
 };
 
+pub use mungos_derive::MungosColl;
+
 pub use mongodb;
 
 #[derive(Clone, Debug)]
