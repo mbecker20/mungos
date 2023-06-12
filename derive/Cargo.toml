@@ -1,5 +1,6 @@
 [package]
 name = "mungos_derive"
+description = "macro to derive MungosColl"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
