@@ -1,16 +1,29 @@
-[package]
-name = "mungos"
-version = "0.3.20"
+[workspace]
+members = ["derive"]
+
+[workspace.package]
+version = "0.3.21"
 edition = "2021"
 authors = ["MoghTech"]
-description = "MongoDB in rust, simplified."
 repository = "https://github.com/mbecker20/mungos"
 license = "MIT"
 
+[package]
+name = "mungos"
+description = "MongoDB in rust, simplified."
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+repository.workspace = true
+license.workspace = true
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[dependencies.mongodb]
+version = "2.5"
+features = ["zstd-compression", "zlib-compression", "snappy-compression"]
+
 [dependencies]
-mongodb = { version = "2.5", features = ["zstd-compression", "zlib-compression", "snappy-compression"] }
 tokio = "1.28"
 serde = "1.0"
 futures = "0.3"
