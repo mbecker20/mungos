@@ -2,7 +2,7 @@
 members = ["derive"]
 
 [workspace.package]
-version = "0.3.22"
+version = "0.3.23"
 edition = "2021"
 authors = ["MoghTech"]
 repository = "https://github.com/mbecker20/mungos"

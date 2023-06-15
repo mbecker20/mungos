@@ -98,27 +98,6 @@ pub fn derive_indexed(input: TokenStream) -> TokenStream {
                 vec![#(#unique_doc_indexes,)*]
             }
         }
-        impl mungos::Indexed for Option<#ident> {
-            fn name() -> &'static str {
-                stringify!(#ident)
-            }
-            fn indexes() -> Vec<String> {
-                let mut indexes = Vec::new();
-                #(#indexes)*
-                indexes
-            }
-            fn unique_indexes() -> Vec<String> {
-                let mut unique_indexes = Vec::new();
-                #(#unique_indexes)*
-                unique_indexes
-            }
-            fn doc_indexes() -> Vec<mungos::mongodb::bson::Document> {
-                vec![#(#doc_indexes,)*]
-            }
-            fn unique_doc_indexes() -> Vec<mungos::mongodb::bson::Document> {
-                vec![#(#unique_doc_indexes,)*]
-            }
-        }
     }
     .into()
 }
