@@ -63,8 +63,8 @@ macro_rules! impl_indexed_nested {
 }
 
 impl_indexed_basic!(
-    String, PathBuf, bool, u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize,
-    ObjectId, Document
+    String, PathBuf, bool, u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, f32, f64,
+    isize, ObjectId, Document
 );
 impl_indexed_nested!(Vec<T>);
 
