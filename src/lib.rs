@@ -8,7 +8,7 @@ use mongodb::{
 use serde::Deserialize;
 
 pub mod helpers;
-pub mod indexed;
+mod indexed;
 pub mod types;
 
 mod collection;
@@ -22,6 +22,7 @@ pub use crate::{
         get_sorted_cursor::SortDirection, update_one::Update,
     },
     types::Projection,
+    indexed::Indexed,
 };
 
 pub use mungos_derive::MungosIndexed;
