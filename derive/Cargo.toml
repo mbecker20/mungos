@@ -1,6 +1,6 @@
 [package]
 name = "mungos_derive"
-description = "macro to derive MungosColl"
+description = "macro to derive mungos::Indexed"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
