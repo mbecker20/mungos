@@ -46,6 +46,9 @@ pub trait Indexed: Serialize + DeserializeOwned + Sync {
 
         Ok(coll)
     }
+    async fn document_collection(mungos: &Mungos, db_name: &str) -> Collection<Document> {
+        mungos.collection(db_name, Self::name())
+    }
 }
 
 macro_rules! impl_indexed_basic {
