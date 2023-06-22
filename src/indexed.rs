@@ -16,10 +16,16 @@ pub trait Indexed: Serialize + DeserializeOwned + Sync {
     fn unique_indexes() -> Vec<String> {
         Vec::new()
     }
+    fn sparse_indexes() -> Vec<String> {
+        Vec::new()
+    }
     fn doc_indexes() -> Vec<Document> {
         Vec::new()
     }
     fn unique_doc_indexes() -> Vec<Document> {
+        Vec::new()
+    }
+    fn sparse_doc_indexes() -> Vec<Document> {
         Vec::new()
     }
     async fn collection(
@@ -36,11 +42,17 @@ pub trait Indexed: Serialize + DeserializeOwned + Sync {
             for unique_index in Self::unique_indexes() {
                 coll.create_unique_index(&unique_index).await?;
             }
+            for sparse_index in Self::sparse_indexes() {
+                coll.create_sparse_index(&sparse_index).await?;
+            }
             for doc_index in Self::doc_indexes() {
                 coll.create_index_from_doc(doc_index).await?;
             }
             for unique_doc_index in Self::unique_doc_indexes() {
                 coll.create_unique_index_from_doc(unique_doc_index).await?;
+            }
+            for sparse_doc_index in Self::sparse_doc_indexes() {
+                coll.create_sparse_index_from_doc(sparse_doc_index).await?;
             }
         }
 
