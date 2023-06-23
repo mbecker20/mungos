@@ -100,7 +100,7 @@ pub fn derive_indexed(input: TokenStream) -> TokenStream {
         sparse_indexes.push(quote! {
             let nested = <#ty as mungos::Indexed>::sparse_indexes();
             for nested in nested {
-                unique_indexes.push(format!("{}.{}", stringify!(#ident), nested));
+                sparse_indexes.push(format!("{}.{}", stringify!(#ident), nested));
             }
         });
     }
