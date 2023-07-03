@@ -43,8 +43,8 @@ pub enum Update<T> {
     Custom(Document),
 }
 
-impl<Any> Collection<Any> {
-    pub async fn update_one<T: Serialize>(
+impl<T: Serialize> Collection<T> {
+    pub async fn update_one(
         &self,
         id: &str,
         update: Update<T>,
