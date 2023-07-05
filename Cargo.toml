@@ -24,7 +24,7 @@ version = "2.6"
 features = ["zstd-compression", "zlib-compression", "snappy-compression"]
 
 [dependencies]
-mungos_derive = "0.4.4"
+mungos_derive = "0.4.8"
 tokio = "1.28"
 tokio-util = "0.7"
 serde = "1.0"
