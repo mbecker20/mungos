@@ -10,7 +10,8 @@ use syn::{parse_macro_input, Data, DeriveInput, Expr, Field};
         sparse_index,
         doc_index,
         unique_doc_index,
-        sparse_doc_index
+        sparse_doc_index,
+        skip_index
     )
 )]
 pub fn derive_indexed(input: TokenStream) -> TokenStream {
@@ -60,6 +61,12 @@ pub fn derive_indexed(input: TokenStream) -> TokenStream {
             continue;
         }
         let ident = ident.unwrap();
+        let skip = attrs
+            .iter()
+            .any(|attr| attr.path().is_ident("skip_index"));
+        if skip {
+            continue;
+        }
         let is_unique = attrs
             .iter()
             .any(|attr| attr.path().is_ident("unique_index"));
