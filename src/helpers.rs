@@ -1,15 +1,81 @@
-use crate::Collection;
+use std::sync::Arc;
+
+use crate::{BulkUpsert, Collection};
 use anyhow::{anyhow, Context};
 use futures::stream::TryStreamExt;
-use mongodb::{error, options::Compressor, Cursor};
+use mongodb::{
+    error,
+    options::{Compressor, FindOptions},
+    Cursor,
+};
 use serde::{de::DeserializeOwned, Serialize};
+use tokio_util::sync::CancellationToken;
 
-pub async fn move_to_new_collection<T: Serialize + DeserializeOwned + Unpin + Send + Sync>(
-    source_collection: Collection<T>,
-    target_collection: Collection<T>,
-) -> error::Result<()> {
-    let items = source_collection.get_some(None, None).await?;
-    target_collection.create_many(items).await?;
+#[derive(Debug, Default)]
+pub struct MigrateCollectionParams {
+    pub batch_size: usize,
+}
+
+pub async fn migrate_collection<
+    S: DeserializeOwned + Unpin + Send + Sync,
+    T: Serialize + Unpin + Send + Sync + 'static,
+>(
+    source: &Collection<S>,
+    target: Arc<Collection<T>>,
+    map: fn(S) -> anyhow::Result<BulkUpsert>,
+    MigrateCollectionParams { batch_size }: MigrateCollectionParams,
+) -> anyhow::Result<()> {
+    let mut cursor = source
+        .collection
+        .find(
+            None,
+            FindOptions::builder().batch_size(batch_size as u32).build(),
+        )
+        .await?;
+
+    let (tx, mut rx) = tokio::sync::mpsc::unbounded_channel::<Vec<BulkUpsert>>();
+
+    let cancel = CancellationToken::new();
+    let cancel_clone = cancel.clone();
+
+    let handle = tokio::spawn(async move {
+        loop {
+            if cancel_clone.is_cancelled() {
+                break;
+            }
+            if let Some(batch) = rx.recv().await {
+                let res = target
+                    .bulk_upsert(batch)
+                    .await
+                    .context("failed at bulk upsert");
+                if let Err(e) = res {
+                    cancel_clone.cancel();
+                    return Err(e);
+                }
+            }
+        }
+        anyhow::Ok(())
+    });
+
+    loop {
+        if cancel.is_cancelled() {
+            // the upsert thread has error upserting
+            return handle.await.context("context")?.context("context");
+        }
+        let batch = batch_load_cursor_map(&mut cursor, batch_size, map)
+            .await?
+            .into_iter()
+            .collect::<anyhow::Result<Vec<_>>>()?;
+        if batch.is_empty() {
+            cancel.cancel();
+            break;
+        }
+        tx.send(batch)?;
+    }
+
+    // wait for upsert thread to finish before function finishes
+    handle.await??;
+
     Ok(())
 }
 
@@ -24,6 +90,25 @@ pub async fn batch_load_cursor<T: DeserializeOwned + Unpin + Send + Sync>(
             break;
         }
         res.push(doc.unwrap());
+        if res.len() >= batch_size {
+            break;
+        }
+    }
+    Ok(res)
+}
+
+pub async fn batch_load_cursor_map<S: DeserializeOwned + Unpin + Send + Sync, T>(
+    cursor: &mut Cursor<S>,
+    batch_size: usize,
+    map: impl Fn(S) -> anyhow::Result<T>,
+) -> anyhow::Result<Vec<anyhow::Result<T>>> {
+    let mut res = Vec::with_capacity(batch_size);
+    loop {
+        let doc = cursor.try_next().await?;
+        if doc.is_none() {
+            break;
+        }
+        res.push(map(doc.unwrap()));
         if res.len() >= batch_size {
             break;
         }
