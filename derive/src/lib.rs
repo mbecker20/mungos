@@ -42,7 +42,17 @@ pub fn derive_indexed(input: TokenStream) -> TokenStream {
         Data::Struct(s) => s,
         Data::Enum(_) => {
             return quote! {
-                impl mungos::Indexed for #ident {}
+                impl mungos::Indexed for #ident {
+                    fn doc_indexes() -> Vec<mungos::mongodb::bson::Document> {
+                        vec![#(#doc_indexes,)*]
+                    }
+                    fn unique_doc_indexes() -> Vec<mungos::mongodb::bson::Document> {
+                        vec![#(#unique_doc_indexes,)*]
+                    }
+                    fn sparse_doc_indexes() -> Vec<mungos::mongodb::bson::Document> {
+                        vec![#(#sparse_doc_indexes,)*]
+                    }
+                }
             }
             .into()
         }
