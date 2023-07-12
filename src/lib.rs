@@ -26,7 +26,7 @@ pub use crate::{
     types::Projection,
 };
 
-pub use mungos_derive::MungosIndexed;
+pub use mungos_derive::*;
 
 pub use mongodb;
 
