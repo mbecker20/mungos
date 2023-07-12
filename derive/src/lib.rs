@@ -154,7 +154,7 @@ pub fn derive_indexed(input: TokenStream) -> TokenStream {
     .into()
 }
 
-#[proc_macro_derive(MungosIdCreatedAt, attributes(id_field))]
+#[proc_macro_derive(StringObjectId, attributes(id_field))]
 pub fn derive_id_created_at(input: TokenStream) -> TokenStream {
     let DeriveInput {
         ident, data, attrs, ..
