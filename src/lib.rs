@@ -7,22 +7,23 @@ use mongodb::{
 };
 use serde::Deserialize;
 
+mod collection;
 pub mod helpers;
 mod indexed;
-pub mod types;
-
-mod collection;
 mod queries;
+mod string_object_id;
+pub mod types;
 
 pub use crate::{
     collection::Collection,
     helpers::parse_comma_seperated_compressors,
+    indexed::Indexed,
     queries::{
         aggregate::AggStage, bulk_update::BulkUpdate, bulk_upsert::BulkUpsert,
         get_sorted_cursor::SortDirection, update_one::Update,
     },
+    string_object_id::StringObjectId,
     types::Projection,
-    indexed::Indexed,
 };
 
 pub use mungos_derive::MungosIndexed;

@@ -71,9 +71,7 @@ pub fn derive_indexed(input: TokenStream) -> TokenStream {
             continue;
         }
         let ident = ident.unwrap();
-        let skip = attrs
-            .iter()
-            .any(|attr| attr.path().is_ident("skip_index"));
+        let skip = attrs.iter().any(|attr| attr.path().is_ident("skip_index"));
         if skip {
             continue;
         }
@@ -150,6 +148,36 @@ pub fn derive_indexed(input: TokenStream) -> TokenStream {
             }
             fn sparse_doc_indexes() -> Vec<mungos::mongodb::bson::Document> {
                 vec![#(#sparse_doc_indexes,)*]
+            }
+        }
+    }
+    .into()
+}
+
+#[proc_macro_derive(MungosIdCreatedAt, attributes(id_field))]
+pub fn derive_id_created_at(input: TokenStream) -> TokenStream {
+    let DeriveInput {
+        ident, data, attrs, ..
+    } = parse_macro_input!(input as DeriveInput);
+
+    match data {
+        Data::Struct(_) => {}
+        _ => panic!("must derive on struct"),
+    }
+
+    let id = attrs
+        .iter()
+        .find(|a| a.path().is_ident("id_field"))
+        .map(|a| {
+            a.parse_args::<proc_macro2::TokenStream>()
+                .expect("failed to parse id_field into token stream")
+        })
+        .unwrap_or(quote!(id));
+
+    quote! {
+        impl mungos::StringObjectId for #ident {
+            fn id(&self) -> &str {
+                &self.#id
             }
         }
     }
