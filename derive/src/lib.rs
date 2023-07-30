@@ -5,13 +5,14 @@ use syn::{parse_macro_input, Data, DeriveInput, Expr, Field};
 #[proc_macro_derive(
     MungosIndexed,
     attributes(
-        index,
-        unique_index,
-        sparse_index,
+        collection_name,
         doc_index,
         unique_doc_index,
         sparse_doc_index,
-        skip_index
+        index,
+        unique_index,
+        sparse_index,
+        skip_index,
     )
 )]
 pub fn derive_indexed(input: TokenStream) -> TokenStream {
@@ -22,19 +23,29 @@ pub fn derive_indexed(input: TokenStream) -> TokenStream {
     let mut doc_indexes = Vec::new();
     let mut unique_doc_indexes = Vec::new();
     let mut sparse_doc_indexes = Vec::new();
+    let mut collection_name = ident.clone();
 
     for attr in attrs {
         if attr.path().is_ident("unique_doc_index") {
-            let doc = attr.parse_args::<Expr>().expect("expected doc! macro");
+            let doc = attr
+                .parse_args::<Expr>()
+                .expect("unique_doc_index: expected doc! macro");
             unique_doc_indexes.push(doc);
         }
         if attr.path().is_ident("sparse_doc_index") {
-            let doc = attr.parse_args::<Expr>().expect("expected doc! macro");
+            let doc = attr
+                .parse_args::<Expr>()
+                .expect("sparse_doc_index: expected doc! macro");
             sparse_doc_indexes.push(doc);
         }
         if attr.path().is_ident("doc_index") {
-            let doc = attr.parse_args::<Expr>().expect("expected doc! macro");
+            let doc = attr
+                .parse_args::<Expr>()
+                .expect("doc_index: expected doc! macro");
             doc_indexes.push(doc);
+        }
+        if attr.path().is_ident("collection_name") {
+            collection_name = attr.parse_args().expect("collection_name: should be ident");
         }
     }
 
@@ -123,7 +134,7 @@ pub fn derive_indexed(input: TokenStream) -> TokenStream {
     quote! {
         impl mungos::Indexed for #ident {
             fn name() -> &'static str {
-                stringify!(#ident)
+                stringify!(#collection_name)
             }
             fn indexes() -> Vec<String> {
                 let mut indexes = Vec::new();
