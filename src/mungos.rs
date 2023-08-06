@@ -7,7 +7,7 @@ use mongodb::{
 };
 use serde::Deserialize;
 
-use crate::{parse_comma_seperated_compressors, Collection};
+use crate::{helpers::parse_comma_seperated_compressors, Collection};
 
 #[derive(Clone, Debug)]
 pub struct Mungos {

@@ -4,6 +4,7 @@ use crate::{BulkUpsert, Collection};
 use anyhow::{anyhow, Context};
 use futures::stream::TryStreamExt;
 use mongodb::{
+    bson::{Bson, Document},
     error,
     options::{Compressor, FindOptions},
     Cursor,
@@ -165,5 +166,26 @@ fn parse_compressor(compressor: &str) -> anyhow::Result<Compressor> {
         Ok(Compressor::Zlib { level })
     } else {
         Err(anyhow!("unrecognized compressor: {compressor}"))
+    }
+}
+
+pub fn into_update_document(doc: Document) -> Document {
+    let mut target = Document::new();
+    into_update_document_rec(&mut target, None, doc);
+    target
+}
+
+fn into_update_document_rec(target: &mut Document, parent_field: Option<String>, doc: Document) {
+    let pf = match parent_field {
+        Some(parent_field) => format!("{parent_field}."),
+        None => String::new(),
+    };
+    for (field, bson) in doc {
+        let f = format!("{pf}{field}");
+        if let Bson::Document(doc) = bson {
+            into_update_document_rec(target, Some(f), doc)
+        } else {
+            target.insert(f, bson);
+        }
     }
 }

@@ -8,7 +8,6 @@ pub mod types;
 
 pub use crate::{
     collection::Collection,
-    helpers::parse_comma_seperated_compressors,
     indexed::Indexed,
     mungos::*,
     queries::{
