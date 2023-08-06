@@ -31,7 +31,7 @@
 //! ```
 //!
 
-use crate::Collection;
+use crate::{helpers::into_update_document, Collection};
 use anyhow::Context;
 use mongodb::bson::{doc, oid::ObjectId, to_bson, Document};
 use serde::Serialize;
@@ -40,6 +40,7 @@ use std::str::FromStr;
 pub enum Update<T> {
     Regular(T),
     Set(Document),
+    FlattenSet(Document),
     Custom(Document),
 }
 
@@ -52,6 +53,7 @@ impl<T: Serialize> Collection<T> {
                 doc! { "$set": to_bson(update)? }
             }
             Update::Set(doc) => doc! { "$set": doc },
+            Update::FlattenSet(doc) => doc! { "$set": into_update_document(doc) },
             Update::Custom(doc) => doc,
         };
         self.collection.update_one(filter, update, None).await?;
