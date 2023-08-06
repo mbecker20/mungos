@@ -31,7 +31,7 @@
 //! ```
 //!
 
-use crate::{helpers::into_update_document, Collection};
+use crate::{helpers::flatten_document, Collection};
 use anyhow::Context;
 use mongodb::bson::{doc, oid::ObjectId, to_bson, Document};
 use serde::Serialize;
@@ -53,7 +53,7 @@ impl<T: Serialize> Collection<T> {
                 doc! { "$set": to_bson(update)? }
             }
             Update::Set(doc) => doc! { "$set": doc },
-            Update::FlattenSet(doc) => doc! { "$set": into_update_document(doc) },
+            Update::FlattenSet(doc) => doc! { "$set": flatten_document(doc) },
             Update::Custom(doc) => doc,
         };
         self.collection.update_one(filter, update, None).await?;

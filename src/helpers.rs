@@ -169,13 +169,13 @@ fn parse_compressor(compressor: &str) -> anyhow::Result<Compressor> {
     }
 }
 
-pub fn into_update_document(doc: Document) -> Document {
+pub fn flatten_document(doc: Document) -> Document {
     let mut target = Document::new();
-    into_update_document_rec(&mut target, None, doc);
+    flatten_document_rec(&mut target, None, doc);
     target
 }
 
-fn into_update_document_rec(target: &mut Document, parent_field: Option<String>, doc: Document) {
+fn flatten_document_rec(target: &mut Document, parent_field: Option<String>, doc: Document) {
     let pf = match parent_field {
         Some(parent_field) => format!("{parent_field}."),
         None => String::new(),
@@ -183,7 +183,7 @@ fn into_update_document_rec(target: &mut Document, parent_field: Option<String>,
     for (field, bson) in doc {
         let f = format!("{pf}{field}");
         if let Bson::Document(doc) = bson {
-            into_update_document_rec(target, Some(f), doc)
+            flatten_document_rec(target, Some(f), doc)
         } else {
             target.insert(f, bson);
         }
