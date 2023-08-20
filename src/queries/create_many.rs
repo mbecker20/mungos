@@ -34,9 +34,4 @@ impl<T: Serialize> Collection<T> {
         self.collection.insert_many(items, None).await?;
         Ok(())
     }
-
-    pub async fn create_many_owned(&self, items: impl IntoIterator<Item = T>) -> Result<()> {
-        self.collection.insert_many(items, None).await?;
-        Ok(())
-    }
 }
