@@ -10,7 +10,6 @@ use mongodb::{
     Cursor,
 };
 use serde::{de::DeserializeOwned, Serialize};
-use tokio_util::sync::CancellationToken;
 
 #[derive(Debug, Default)]
 pub struct MigrateCollectionParams {
@@ -34,48 +33,19 @@ pub async fn migrate_collection<
         )
         .await?;
 
-    let (tx, mut rx) = tokio::sync::mpsc::unbounded_channel::<Vec<BulkUpsert>>();
-
-    let cancel = CancellationToken::new();
-    let cancel_clone = cancel.clone();
-
-    let handle = tokio::spawn(async move {
-        loop {
-            if cancel_clone.is_cancelled() {
-                break;
-            }
-            if let Some(batch) = rx.recv().await {
-                let res = target
-                    .bulk_upsert(batch)
-                    .await
-                    .context("failed at bulk upsert");
-                if let Err(e) = res {
-                    cancel_clone.cancel();
-                    return Err(e);
-                }
-            }
-        }
-        anyhow::Ok(())
-    });
-
     loop {
-        if cancel.is_cancelled() {
-            // the upsert thread has error upserting
-            return handle.await.context("context")?.context("context");
-        }
         let batch = batch_load_cursor_map(&mut cursor, batch_size, map)
             .await?
             .into_iter()
             .collect::<anyhow::Result<Vec<_>>>()?;
         if batch.is_empty() {
-            cancel.cancel();
             break;
         }
-        tx.send(batch)?;
+        target
+            .bulk_upsert(batch)
+            .await
+            .context("failed at bulk upsert of batch")?;
     }
-
-    // wait for upsert thread to finish before function finishes
-    handle.await??;
 
     Ok(())
 }
