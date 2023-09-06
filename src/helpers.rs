@@ -5,7 +5,6 @@ use anyhow::{anyhow, Context};
 use futures::stream::TryStreamExt;
 use mongodb::{
     bson::{Bson, Document},
-    error,
     options::{Compressor, FindOptions},
     Cursor,
 };
@@ -31,13 +30,15 @@ pub async fn migrate_collection<
             None,
             FindOptions::builder().batch_size(batch_size as u32).build(),
         )
-        .await?;
+        .await
+        .context("failed to get handle to source collection")?;
 
     loop {
         let batch = batch_load_cursor_map(&mut cursor, batch_size, map)
             .await?
             .into_iter()
-            .collect::<anyhow::Result<Vec<_>>>()?;
+            .collect::<anyhow::Result<Vec<_>>>()
+            .context("failed to batch load from cursor")?;
         if batch.is_empty() {
             break;
         }
@@ -53,10 +54,10 @@ pub async fn migrate_collection<
 pub async fn batch_load_cursor<T: DeserializeOwned + Unpin + Send + Sync>(
     cursor: &mut Cursor<T>,
     batch_size: usize,
-) -> error::Result<Vec<T>> {
+) -> anyhow::Result<Vec<T>> {
     let mut res = Vec::with_capacity(batch_size);
     loop {
-        let doc = cursor.try_next().await?;
+        let doc = cursor.try_next().await.context("failed to load next document")?;
         if doc.is_none() {
             break;
         }
@@ -75,7 +76,7 @@ pub async fn batch_load_cursor_map<S: DeserializeOwned + Unpin + Send + Sync, T>
 ) -> anyhow::Result<Vec<anyhow::Result<T>>> {
     let mut res = Vec::with_capacity(batch_size);
     loop {
-        let doc = cursor.try_next().await?;
+        let doc = cursor.try_next().await.context("failed to load next document")?;
         if doc.is_none() {
             break;
         }
