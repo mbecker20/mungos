@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use crate::{BulkUpsert, Collection};
 use anyhow::{anyhow, Context};
 use futures::stream::TryStreamExt;
@@ -20,7 +18,7 @@ pub async fn migrate_collection<
     T: Serialize + Unpin + Send + Sync + 'static,
 >(
     source: &Collection<S>,
-    target: Arc<Collection<T>>,
+    target: &Collection<T>,
     map: fn(S) -> anyhow::Result<BulkUpsert>,
     MigrateCollectionParams { batch_size }: MigrateCollectionParams,
 ) -> anyhow::Result<()> {
