@@ -28,7 +28,7 @@ pub async fn aggregate_collect<T>(
 }
 
 pub async fn aggregate_collect_parse<T, D: DeserializeOwned>() -> anyhow::Result<Vec<D>> {
-	todo!()
+  todo!()
 }
 
 pub enum AggStage {
@@ -67,8 +67,8 @@ pub enum AggStage {
   Doc(Document),
 }
 
-use AggStage::*;
 use serde::de::DeserializeOwned;
+use AggStage::*;
 
 fn get_agg_stage_as_doc(stage: AggStage) -> Document {
   match stage {
