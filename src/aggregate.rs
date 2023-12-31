@@ -1,34 +1,43 @@
+use anyhow::Context;
 use futures::TryStreamExt;
 use mongodb::{
-  bson::{doc, Document},
-  error::Result,
+  bson::{doc, from_document, Document},
+  error::Error,
   options::AggregateOptions,
   Collection, Cursor,
 };
 
 pub async fn aggregate<T>(
-  collection: Collection<T>,
+  collection: &Collection<T>,
   pipeline: impl IntoIterator<Item = impl Into<Document>>,
   options: impl Into<Option<AggregateOptions>>,
-) -> Result<Cursor<Document>> {
+) -> Result<Cursor<Document>, Error> {
   collection
     .aggregate(pipeline.into_iter().map(|d| d.into()), options)
     .await
 }
 
 pub async fn aggregate_collect<T>(
-  collection: Collection<T>,
+  collection: &Collection<T>,
   pipeline: impl IntoIterator<Item = impl Into<Document>>,
   options: impl Into<Option<AggregateOptions>>,
-) -> Result<Vec<Document>> {
+) -> Result<Vec<Document>, Error> {
   aggregate(collection, pipeline, options)
     .await?
     .try_collect()
     .await
 }
 
-pub async fn aggregate_collect_parse<T, D: DeserializeOwned>() -> anyhow::Result<Vec<D>> {
-  todo!()
+pub async fn aggregate_collect_parse<T, D: DeserializeOwned>(
+  collection: &Collection<T>,
+  pipeline: impl IntoIterator<Item = impl Into<Document>>,
+  options: impl Into<Option<AggregateOptions>>,
+) -> anyhow::Result<Vec<D>> {
+  aggregate_collect(collection, pipeline, options)
+    .await?
+    .into_iter()
+    .map(|d| from_document(d).context("failed to parse aggregation result"))
+    .collect()
 }
 
 pub enum AggStage {
