@@ -5,3 +5,5 @@ pub mod helpers;
 pub mod init;
 pub mod projection;
 pub mod update;
+
+pub use mongodb;
