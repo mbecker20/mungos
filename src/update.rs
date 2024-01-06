@@ -1,4 +1,7 @@
-use mongodb::bson::{doc, ser::Error, to_bson, Document};
+use mongodb::{
+  bson::{doc, ser::Error, to_bson, Document},
+  options::UpdateModifications,
+};
 use serde::Serialize;
 
 use crate::helpers::flatten_document;
@@ -22,5 +25,13 @@ impl<T: Serialize> TryFrom<Update<&T>> for Document {
       Update::Custom(doc) => doc,
     };
     Ok(update)
+  }
+}
+
+impl<T: Serialize> TryFrom<Update<&T>> for UpdateModifications {
+  type Error = Error;
+  fn try_from(update: Update<&T>) -> Result<Self, Self::Error> {
+    let update: Document = update.try_into()?;
+    Ok(update.into())
   }
 }
