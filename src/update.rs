@@ -1,37 +1,29 @@
 use mongodb::{
-  bson::{doc, ser::Error, to_bson, Document},
+  bson::{doc, Document},
   options::UpdateModifications,
 };
-use serde::Serialize;
 
 use crate::helpers::flatten_document;
 
-pub enum Update<T> {
-  Full(T),
+pub enum Update {
   Set(Document),
   FlattenSet(Document),
   Custom(Document),
 }
 
-impl<T: Serialize> TryFrom<Update<&T>> for Document {
-  type Error = Error;
-  fn try_from(update: Update<&T>) -> Result<Self, Self::Error> {
-    let update = match update {
-      Update::Full(update) => {
-        doc! { "$set": to_bson(update)? }
-      }
+impl From<Update> for Document {
+  fn from(update: Update) -> Self {
+    match update {
       Update::Set(doc) => doc! { "$set": doc },
       Update::FlattenSet(doc) => doc! { "$set": flatten_document(doc) },
       Update::Custom(doc) => doc,
-    };
-    Ok(update)
+    }
   }
 }
 
-impl<T: Serialize> TryFrom<Update<&T>> for UpdateModifications {
-  type Error = Error;
-  fn try_from(update: Update<&T>) -> Result<Self, Self::Error> {
-    let update: Document = update.try_into()?;
-    Ok(update.into())
+impl From<Update> for UpdateModifications {
+  fn from(update: Update) -> Self {
+    let update: Document = update.into();
+    update.into()
   }
 }

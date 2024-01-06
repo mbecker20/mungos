@@ -1,11 +1,10 @@
 use anyhow::Context;
 use futures::future::join;
 use mongodb::{
-  bson::{self, doc, Document},
+  bson::{doc, Document},
   error::ErrorKind,
   Database,
 };
-use serde::Serialize;
 
 use crate::update::Update;
 
@@ -19,14 +18,11 @@ impl BulkUpdate {
     BulkUpdate { query, update }
   }
 
-  pub fn new_from_update<T: Serialize>(
-    query: Document,
-    update: Update<&T>,
-  ) -> Result<BulkUpdate, bson::ser::Error> {
-    Ok(BulkUpdate {
+  pub fn new_from_update(query: Document, update: Update) -> BulkUpdate {
+    BulkUpdate {
       query,
-      update: update.try_into()?,
-    })
+      update: update.into(),
+    }
   }
 }
 
