@@ -1,24 +1,17 @@
 use std::time::Duration;
 
 use anyhow::Context;
-use mongodb::{
-  error::Result,
-  options::{ClientOptions, Compressor},
-};
+use mongodb::{error::Result, options::ClientOptions};
 use serde::Deserialize;
-
-use crate::helpers::parse_comma_seperated_compressors;
 
 pub async fn with_args(
   uri: &str,
   app_name: impl Into<String>,
   timeout: Duration,
-  compressors: impl Into<Option<Vec<Compressor>>>,
 ) -> Result<mongodb::Client> {
   let mut client_options = ClientOptions::parse(uri).await?;
   client_options.app_name = Some(app_name.into());
   client_options.connect_timeout = Some(timeout);
-  client_options.compressors = compressors.into();
   mongodb::Client::with_options(client_options)
 }
 
@@ -29,14 +22,6 @@ pub async fn from_env() -> anyhow::Result<mongodb::Client> {
 pub fn builder_from_env() -> anyhow::Result<MongoBuilder> {
   let env: MongoEnv = envy::from_env().context("failed to parse mungos env")?;
 
-  let compressors = env
-    .mongo_compressors
-    .map(|c| {
-      parse_comma_seperated_compressors(&c)
-        .context("failed to parse mongo compressors specified in env")
-    })
-    .transpose()?;
-
   let builder = MongoBuilder {
     uri: env.mongo_uri,
     username: env.mongo_username,
@@ -44,7 +29,6 @@ pub fn builder_from_env() -> anyhow::Result<MongoBuilder> {
     address: env.mongo_address,
     app_name: env.mongo_app_name.unwrap_or("mungos".to_string()),
     timeout: Duration::from_secs(env.mongo_timeout_secs.unwrap_or(3)),
-    compressors,
   };
 
   Ok(builder)
@@ -58,7 +42,6 @@ struct MongoEnv {
   mongo_address: Option<String>,
   mongo_app_name: Option<String>,
   mongo_timeout_secs: Option<u64>,
-  mongo_compressors: Option<String>,
 }
 
 #[derive(Default, Debug)]
@@ -70,7 +53,6 @@ pub struct MongoBuilder {
 
   app_name: String,
   timeout: Duration,
-  compressors: Option<Vec<Compressor>>,
 }
 
 impl MongoBuilder {
@@ -91,7 +73,7 @@ impl MongoBuilder {
       }
     };
 
-    with_args(&uri, self.app_name, self.timeout, self.compressors)
+    with_args(&uri, self.app_name, self.timeout)
       .await
       .context("failed to init mongo with given args")
   }
@@ -123,11 +105,6 @@ impl MongoBuilder {
 
   pub fn timeout(mut self, duration: Duration) -> MongoBuilder {
     self.timeout = duration;
-    self
-  }
-
-  pub fn compressors(mut self, compressors: impl Into<Option<Vec<Compressor>>>) -> MongoBuilder {
-    self.compressors = compressors.into();
     self
   }
 }

@@ -2,7 +2,7 @@
 [package]
 name = "mungos"
 description = "MongoDB in rust, simplified."
-version = "0.5.4"
+version = "0.5.5"
 edition = "2021"
 authors = ["MoghTech"]
 repository = "https://github.com/mbecker20/mungos"
@@ -10,18 +10,10 @@ license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[dependencies.mongodb]
-version = "2.8.0"
-features = ["zstd-compression", "zlib-compression", "snappy-compression"]
-
-[dependencies.serde]
-version = "1.0.195"
-features = ["derive"]
-
 [dependencies]
-async-trait = "0.1.77"
+serde = { version = "1.0.201", features = ["derive"] }
+mongodb = "2.8.2"
+async-trait = "0.1.80"
 envy = "0.4.2"
-anyhow = "1.0.79"
+anyhow = "1.0.83"
 futures = "0.3.30"
-# tokio = "1.3"
-# tokio-util = "0.7"
