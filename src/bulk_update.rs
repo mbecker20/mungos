@@ -1,3 +1,5 @@
+use std::future::IntoFuture;
+
 use anyhow::Context;
 use futures::future::join;
 use mongodb::{
@@ -46,7 +48,7 @@ pub async fn bulk_update(
     "update": collection_name,
     "updates": updates
   };
-  db.run_command(command, None).await
+  db.run_command(command).await
 }
 
 pub async fn bulk_update_retry_too_big(
@@ -69,7 +71,7 @@ pub async fn bulk_update_retry_too_big(
     "update": collection_name,
     "updates": &updates
   };
-  let res = db.run_command(command, None).await;
+  let res = db.run_command(command).await;
   let error_kind = match &res {
     Ok(_) => return res.context(""),
     Err(e) => &*e.kind,
@@ -86,7 +88,11 @@ pub async fn bulk_update_retry_too_big(
         "update": collection_name,
         "updates": u2,
       };
-      let (res1, res2) = join(db.run_command(c1, None), db.run_command(c2, None)).await;
+      let (res1, res2) = join(
+        db.run_command(c1).into_future(),
+        db.run_command(c2).into_future(),
+      )
+      .await;
       let doc1 = res1.context("failed again on 1st half of update batch")?;
       let doc2 = res2.context("failed again on 2nd half of update batch")?;
       return Ok(doc! {

@@ -7,17 +7,18 @@ use mongodb::{
   Collection, Cursor,
 };
 
-pub async fn aggregate<T>(
+pub async fn aggregate<T: Send + Sync>(
   collection: &Collection<T>,
   pipeline: impl IntoIterator<Item = impl Into<Document>>,
   options: impl Into<Option<AggregateOptions>>,
 ) -> Result<Cursor<Document>, Error> {
   collection
-    .aggregate(pipeline.into_iter().map(|d| d.into()), options)
+    .aggregate(pipeline.into_iter().map(|d| d.into()))
+    .with_options(options)
     .await
 }
 
-pub async fn aggregate_collect<T>(
+pub async fn aggregate_collect<T: Send + Sync>(
   collection: &Collection<T>,
   pipeline: impl IntoIterator<Item = impl Into<Document>>,
   options: impl Into<Option<AggregateOptions>>,
@@ -28,7 +29,7 @@ pub async fn aggregate_collect<T>(
     .await
 }
 
-pub async fn aggregate_collect_parse<T, D: DeserializeOwned>(
+pub async fn aggregate_collect_parse<T: Send + Sync, D: DeserializeOwned>(
   collection: &Collection<T>,
   pipeline: impl IntoIterator<Item = impl Into<Document>>,
   options: impl Into<Option<AggregateOptions>>,

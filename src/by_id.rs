@@ -15,12 +15,12 @@ pub async fn find_one_by_id<T: DeserializeOwned + Unpin + Send + Sync>(
 ) -> anyhow::Result<Option<T>> {
   let filter = doc! { "_id": ObjectId::from_str(id).context("id is not ObjectId")? };
   coll
-    .find_one(filter, None)
+    .find_one(filter)
     .await
     .context("failed at mongo find_one")
 }
 
-pub async fn update_one_by_id<T>(
+pub async fn update_one_by_id<T: Send + Sync>(
   coll: &Collection<T>,
   id: &str,
   update: impl Into<UpdateModifications>,
@@ -30,22 +30,20 @@ pub async fn update_one_by_id<T>(
     .update_one(
       doc! { "_id": ObjectId::from_str(id).context("id is not valid ObjectId")? },
       update,
-      options,
     )
+    .with_options(options)
     .await
     .context("failed at mongo update_one")
 }
 
-pub async fn delete_one_by_id<T>(
+pub async fn delete_one_by_id<T: Send + Sync>(
   coll: &Collection<T>,
   id: &str,
   options: impl Into<Option<DeleteOptions>>,
 ) -> anyhow::Result<DeleteResult> {
   coll
-    .delete_one(
-      doc! { "_id": ObjectId::from_str(id).context("id is not valid ObjectId")? },
-      options,
-    )
+    .delete_one(doc! { "_id": ObjectId::from_str(id).context("id is not valid ObjectId")? })
+    .with_options(options)
     .await
     .context("failed at mongo delete_one")
 }
