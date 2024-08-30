@@ -2,7 +2,7 @@
 [package]
 name = "mungos"
 description = "MongoDB in rust, simplified."
-version = "1.0.1"
+version = "1.1.0"
 edition = "2021"
 authors = ["MoghTech"]
 repository = "https://github.com/mbecker20/mungos"
@@ -13,7 +13,7 @@ license = "MIT"
 [dependencies]
 serde = "1.0"
 serde_derive = "1.0"
-mongodb = "3.0"
+mongodb = "3.1"
 envy = "0.4"
 anyhow = "1.0"
 futures = "0.3"
