@@ -60,13 +60,13 @@ impl MongoBuilder {
     let uri = if let Some(uri) = self.uri {
       uri.to_string()
     } else {
-      let address = self
-        .address
-        .context("must specify either full uri or address. got neither")?;
+      let address = self.address.context(
+        "must specify either full uri (MONGO_URI) or address (MONGO_ADDRESS). got neither",
+      )?;
       if let Some(username) = self.username {
-        let password = self
-          .password
-          .context("specified mongo username, but not password")?;
+        let password = self.password.context(
+          "specified mongo username (MONGO_USERNAME), but not password (MONGO_PASSWORD)",
+        )?;
         format!("mongodb://{username}:{password}@{address}")
       } else {
         format!("mongodb://{address}")
