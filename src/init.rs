@@ -67,7 +67,11 @@ impl MongoBuilder {
         let password = self.password.context(
           "specified mongo username (MONGO_USERNAME), but not password (MONGO_PASSWORD)",
         )?;
-        format!("mongodb://{username}:{password}@{address}")
+        format!(
+          "mongodb://{}:{}@{address}",
+          urlencoding::encode(&username),
+          urlencoding::encode(&password)
+        )
       } else {
         format!("mongodb://{address}")
       }
